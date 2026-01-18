@@ -88,6 +88,45 @@ export class AdminService {
     });
   }
 
+  async getAllCompanies(page = 1, limit = 100, verified?: boolean) {
+    const skip = (page - 1) * limit;
+
+    const where = verified !== undefined
+      ? { verificationStatus: verified ? VerificationStatus.VERIFIED : VerificationStatus.PENDING }
+      : {};
+
+    const [companies, total] = await Promise.all([
+      this.prisma.tourCompany.findMany({
+        where,
+        skip,
+        take: limit,
+        include: {
+          subscription: true,
+          admin: {
+            select: {
+              id: true,
+              email: true,
+              firstName: true,
+              lastName: true,
+            },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.tourCompany.count({ where }),
+    ]);
+
+    return {
+      data: companies,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
   async getAllAuctions(page = 1, limit = 10, status?: string) {
     const skip = (page - 1) * limit;
 

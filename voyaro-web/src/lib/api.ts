@@ -211,6 +211,9 @@ export const admin = {
   getPendingVerifications: (token: string) =>
     request("/admin/companies/pending", { token }),
 
+  getAllCompanies: (token: string, page = 1, limit = 100, verified?: boolean) =>
+    request(`/admin/companies?page=${page}&limit=${limit}${verified !== undefined ? `&verified=${verified}` : ""}`, { token }),
+
   verifyCompany: (token: string, companyId: string) =>
     request(`/admin/companies/${companyId}/verify`, { method: "POST", token }),
 

@@ -30,6 +30,20 @@ export class AdminController {
     return this.adminService.getPendingVerifications();
   }
 
+  @Get('companies')
+  async getAllCompanies(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('verified') verified?: string,
+  ) {
+    const verifiedBool = verified === 'true' ? true : verified === 'false' ? false : undefined;
+    return this.adminService.getAllCompanies(
+      page ? parseInt(page, 10) : 1,
+      limit ? parseInt(limit, 10) : 100,
+      verifiedBool,
+    );
+  }
+
   @Post('companies/:id/verify')
   async verifyCompany(@Param('id') id: string) {
     return this.adminService.verifyCompany(id);

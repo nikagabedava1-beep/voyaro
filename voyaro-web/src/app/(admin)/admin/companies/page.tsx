@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/hooks/use-auth";
-import { companies as companiesApi, admin } from "@/lib/api";
+import { admin } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -34,9 +34,7 @@ export default function AdminCompaniesPage() {
     setIsLoading(true);
     try {
       const verified = filter === "verified" ? true : filter === "pending" ? false : undefined;
-      const data = await companiesApi.findAll
-        ? (companiesApi as any).findAll(token!, 1, 100, verified)
-        : { data: [] };
+      const data = await admin.getAllCompanies(token!, 1, 100, verified);
       setCompanies((data as any).data || []);
     } catch (error) {
       console.error("Failed to load companies:", error);
