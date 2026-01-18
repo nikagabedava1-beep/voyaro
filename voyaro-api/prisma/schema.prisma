@@ -1,0 +1,296 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum UserRole {
+  TRAVELER
+  COMPANY_ADMIN
+  PLATFORM_ADMIN
+}
+
+enum TripStatus {
+  COLLECTING_DATES
+  AUCTION_ACTIVE
+  AUCTION_ENDED
+  WINNER_SELECTED
+  COMPLETED
+  CANCELLED
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum SubscriptionTier {
+  FREE
+  PRO
+  PREMIUM
+}
+
+enum AuctionStatus {
+  ACTIVE
+  ENDED
+  WINNER_SELECTED
+  CANCELLED
+}
+
+enum OfferStatus {
+  PENDING
+  SUBMITTED
+  WITHDRAWN
+  WINNER
+  REJECTED
+}
+
+enum ComfortLevel {
+  BUDGET
+  STANDARD
+  COMFORT
+  LUXURY
+}
+
+// Models
+model User {
+  id                String              @id @default(uuid())
+  email             String              @unique
+  passwordHash      String
+  firstName         String
+  lastName          String
+  role              UserRole            @default(TRAVELER)
+  avatarUrl         String?
+  phone             String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  // Relations
+  createdTrips      Trip[]              @relation("TripCreator")
+  tripParticipants  TripParticipant[]
+  dateAvailabilities DateAvailability[]
+  votes             Vote[]
+  tourCompany       TourCompany?        @relation("CompanyAdmin")
+
+  @@map("users")
+}
+
+model Trip {
+  id                String              @id @default(uuid())
+  title             String
+  description       String?
+  destination       String
+  theme             String?
+  status            TripStatus          @default(COLLECTING_DATES)
+  inviteToken       String              @unique @default(uuid())
+  minParticipants   Int                 @default(2)
+  maxParticipants   Int                 @default(20)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  // Relations
+  creatorId         String
+  creator           User                @relation("TripCreator", fields: [creatorId], references: [id])
+  participants      TripParticipant[]
+  preferences       Preference[]
+  groupProfile      GroupProfile?
+  auction           Auction?
+
+  @@map("trips")
+}
+
+model TripParticipant {
+  id                String              @id @default(uuid())
+  isConfirmed       Boolean             @default(false)
+  joinedAt          DateTime            @default(now())
+  confirmedAt       DateTime?
+
+  // Relations
+  tripId            String
+  trip              Trip                @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  userId            String
+  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dateAvailabilities DateAvailability[]
+
+  @@unique([tripId, userId])
+  @@map("trip_participants")
+}
+
+model DateAvailability {
+  id                String              @id @default(uuid())
+  date              DateTime            @db.Date
+  isAvailable       Boolean             @default(true)
+  createdAt         DateTime            @default(now())
+
+  // Relations
+  participantId     String
+  participant       TripParticipant     @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  userId            String
+  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([participantId, date])
+  @@map("date_availabilities")
+}
+
+model Preference {
+  id                String              @id @default(uuid())
+  minBudget         Float?
+  maxBudget         Float?
+  comfortLevel      ComfortLevel        @default(STANDARD)
+  mustHaves         String[]
+  niceToHaves       String[]
+  dealBreakers      String[]
+  notes             String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  // Relations
+  tripId            String
+  trip              Trip                @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  submittedById     String
+
+  @@map("preferences")
+}
+
+model GroupProfile {
+  id                String              @id @default(uuid())
+  participantCount  Int
+  avgMinBudget      Float?
+  avgMaxBudget      Float?
+  primaryComfortLevel ComfortLevel      @default(STANDARD)
+  commonMustHaves   String[]
+  commonNiceToHaves String[]
+  commonDealBreakers String[]
+  bestStartDate     DateTime?           @db.Date
+  bestEndDate       DateTime?           @db.Date
+  dateOverlapScore  Float?
+  generatedAt       DateTime            @default(now())
+
+  // Relations
+  tripId            String              @unique
+  trip              Trip                @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+  @@map("group_profiles")
+}
+
+model TourCompany {
+  id                String              @id @default(uuid())
+  name              String
+  description       String?
+  logoUrl           String?
+  website           String?
+  phone             String?
+  address           String?
+  destinations      String[]
+  minGroupSize      Int                 @default(2)
+  maxGroupSize      Int                 @default(50)
+  rating            Float               @default(0)
+  reviewCount       Int                 @default(0)
+  verificationStatus VerificationStatus @default(PENDING)
+  verifiedAt        DateTime?
+  rejectionReason   String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  // Relations
+  adminId           String              @unique
+  admin             User                @relation("CompanyAdmin", fields: [adminId], references: [id])
+  subscription      CompanySubscription?
+  offers            Offer[]
+
+  @@map("tour_companies")
+}
+
+model CompanySubscription {
+  id                String              @id @default(uuid())
+  tier              SubscriptionTier    @default(FREE)
+  stripeCustomerId  String?
+  stripeSubscriptionId String?
+  currentPeriodStart DateTime?
+  currentPeriodEnd  DateTime?
+  bidsUsedThisMonth Int                 @default(0)
+  bidsResetAt       DateTime?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  // Relations
+  companyId         String              @unique
+  company           TourCompany         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@map("company_subscriptions")
+}
+
+model Auction {
+  id                String              @id @default(uuid())
+  status            AuctionStatus       @default(ACTIVE)
+  startedAt         DateTime            @default(now())
+  endsAt            DateTime
+  destination       String
+  participantCount  Int
+  startDate         DateTime?           @db.Date
+  endDate           DateTime?           @db.Date
+  minBudget         Float?
+  maxBudget         Float?
+  comfortLevel      ComfortLevel?
+  requirements      String[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  // Relations
+  tripId            String              @unique
+  trip              Trip                @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  offers            Offer[]
+  winningOfferId    String?
+
+  @@map("auctions")
+}
+
+model Offer {
+  id                String              @id @default(uuid())
+  status            OfferStatus         @default(PENDING)
+  title             String
+  description       String
+  pricePerPerson    Float
+  totalPrice        Float
+  inclusions        String[]
+  exclusions        String[]
+  itinerary         String?
+  validUntil        DateTime?
+  score             Float               @default(0)
+  priceScore        Float               @default(0)
+  ratingScore       Float               @default(0)
+  preferenceScore   Float               @default(0)
+  voteCount         Int                 @default(0)
+  submittedAt       DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  // Relations
+  auctionId         String
+  auction           Auction             @relation(fields: [auctionId], references: [id], onDelete: Cascade)
+  companyId         String
+  company           TourCompany         @relation(fields: [companyId], references: [id])
+  votes             Vote[]
+
+  @@unique([auctionId, companyId])
+  @@map("offers")
+}
+
+model Vote {
+  id                String              @id @default(uuid())
+  rank              Int                 @default(1)
+  createdAt         DateTime            @default(now())
+
+  // Relations
+  offerId           String
+  offer             Offer               @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  userId            String
+  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([offerId, userId])
+  @@map("votes")
+}

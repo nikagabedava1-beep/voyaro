@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: voyaro-db
+    environment:
+      POSTGRES_USER: ${DB_USER:-voyaro}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-voyaro_password}
+      POSTGRES_DB: ${DB_NAME:-voyaro}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-voyaro}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ./voyaro-api
+      dockerfile: Dockerfile
+    container_name: voyaro-api
+    environment:
+      DATABASE_URL: postgresql://${DB_USER:-voyaro}:${DB_PASSWORD:-voyaro_password}@postgres:5432/${DB_NAME:-voyaro}?schema=public
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-24h}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      NODE_ENV: production
+    ports:
+      - "4000:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./voyaro-web
+      dockerfile: Dockerfile
+    container_name: voyaro-web
+    environment:
+      NEXT_PUBLIC_API_URL: ${API_URL:-http://localhost:4000/api}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
