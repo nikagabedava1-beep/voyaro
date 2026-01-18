@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateCompanyDto, UpdateCompanyDto } from './dto';
-import { UserRole, SubscriptionTier } from '@prisma/client';
+import { UserRole, SubscriptionTier, VerificationStatus } from '@prisma/client';
 
 @Injectable()
 export class CompaniesService {
@@ -216,7 +216,7 @@ export class CompaniesService {
     const skip = (page - 1) * limit;
 
     const where = verified !== undefined
-      ? { verificationStatus: verified ? 'VERIFIED' : 'PENDING' }
+      ? { verificationStatus: verified ? VerificationStatus.VERIFIED : VerificationStatus.PENDING }
       : {};
 
     const [companies, total] = await Promise.all([

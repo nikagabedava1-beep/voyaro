@@ -18,7 +18,6 @@ export class SubscriptionsService {
   ) {
     this.stripe = new Stripe(
       this.configService.get<string>('STRIPE_SECRET_KEY') || '',
-      { apiVersion: '2024-11-20.acacia' },
     );
   }
 
@@ -203,8 +202,8 @@ export class SubscriptionsService {
       data: {
         tier,
         stripeSubscriptionId: subscription.id,
-        currentPeriodStart: new Date(subscription.current_period_start * 1000),
-        currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+        currentPeriodStart: new Date((subscription as any).current_period_start * 1000),
+        currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
         bidsUsedThisMonth: 0,
       },
     });
@@ -219,7 +218,7 @@ export class SubscriptionsService {
 
     // Determine tier based on price
     const priceId = subscription.items.data[0]?.price.id;
-    let tier = SubscriptionTier.FREE;
+    let tier: SubscriptionTier = SubscriptionTier.FREE;
 
     if (priceId === this.configService.get<string>('STRIPE_PRO_PRICE_ID')) {
       tier = SubscriptionTier.PRO;
@@ -231,8 +230,8 @@ export class SubscriptionsService {
       where: { id: companySubscription.id },
       data: {
         tier,
-        currentPeriodStart: new Date(subscription.current_period_start * 1000),
-        currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+        currentPeriodStart: new Date((subscription as any).current_period_start * 1000),
+        currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
       },
     });
   }
@@ -256,10 +255,10 @@ export class SubscriptionsService {
   }
 
   private async handlePaymentSucceeded(invoice: Stripe.Invoice) {
-    if (!invoice.subscription) return;
+    if (!(invoice as any).subscription) return;
 
     const companySubscription = await this.prisma.companySubscription.findFirst({
-      where: { stripeSubscriptionId: invoice.subscription as string },
+      where: { stripeSubscriptionId: (invoice as any).subscription as string },
     });
 
     if (!companySubscription) return;
