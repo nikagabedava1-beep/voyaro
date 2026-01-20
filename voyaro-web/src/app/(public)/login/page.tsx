@@ -3,13 +3,17 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/hooks/use-auth";
+import { useLanguage } from "@/contexts/language-context";
+import { t } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
 
 export default function LoginPage() {
   const { login } = useAuth();
+  const { t: translate } = useLanguage();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -31,6 +35,11 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
+      {/* Language Switcher */}
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSwitcher />
+      </div>
+
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <div className="text-center mb-4">
@@ -38,9 +47,9 @@ export default function LoginPage() {
               Voyaro
             </Link>
           </div>
-          <CardTitle className="text-2xl text-center">Welcome back</CardTitle>
+          <CardTitle className="text-2xl text-center">{translate(t.auth.welcomeBack)}</CardTitle>
           <CardDescription className="text-center">
-            Enter your credentials to access your account
+            {translate(t.auth.enterCredentials)}
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
@@ -51,7 +60,7 @@ export default function LoginPage() {
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{translate(t.auth.email)}</Label>
               <Input
                 id="email"
                 type="email"
@@ -62,7 +71,7 @@ export default function LoginPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{translate(t.auth.password)}</Label>
               <Input
                 id="password"
                 type="password"
@@ -74,16 +83,16 @@ export default function LoginPage() {
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full" isLoading={isLoading}>
-              Sign In
+              {translate(t.auth.signIn)}
             </Button>
             <div className="text-sm text-center text-muted-foreground">
-              Don&apos;t have an account?{" "}
+              {translate(t.auth.noAccount)}{" "}
               <Link href="/register/traveler" className="text-primary hover:underline">
-                Sign up as Traveler
+                {translate(t.auth.signUpTraveler)}
               </Link>
-              {" or "}
+              {" "}{translate(t.auth.or)}{" "}
               <Link href="/register/company" className="text-primary hover:underline">
-                Register Company
+                {translate(t.auth.registerCompany)}
               </Link>
             </div>
           </CardFooter>
