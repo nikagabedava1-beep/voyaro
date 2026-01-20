@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
@@ -15,7 +15,7 @@ import { formatCurrency, formatTimeRemaining, formatDate } from "@/lib/utils";
 import { ArrowLeft, MapPin, Users, Clock, Calendar, DollarSign, X } from "lucide-react";
 import { Auction, TourCompany } from "@/types";
 
-export default function CompanyAuctionsPage() {
+function CompanyAuctionsContent() {
   const searchParams = useSearchParams();
   const submitToAuctionId = searchParams.get("submit");
   const { token } = useAuth();
@@ -334,5 +334,17 @@ export default function CompanyAuctionsPage() {
         )}
       </main>
     </div>
+  );
+}
+
+export default function CompanyAuctionsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    }>
+      <CompanyAuctionsContent />
+    </Suspense>
   );
 }
