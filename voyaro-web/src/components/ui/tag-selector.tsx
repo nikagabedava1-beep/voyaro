@@ -3,7 +3,6 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { tags as tagsApi } from "@/lib/api";
-import { TravelIcon, travelIcons } from "./travel-icons";
 import { Loader2, Check } from "lucide-react";
 
 interface TripTag {
@@ -120,7 +119,7 @@ export function TagSelector({
         {tags.map((tag) => {
           const selected = isSelected(tag.slug);
           const isDisabled = disabled || (!selected && isMaxReached);
-          const hasIcon = tag.slug in travelIcons;
+          const emoji = tag.emoji;
 
           return (
             <button
@@ -141,23 +140,12 @@ export function TagSelector({
                 disabled && "cursor-not-allowed"
               )}
             >
-              {/* Icon */}
+              {/* Emoji Icon */}
               <div className={cn(
                 "flex items-center justify-center w-10 h-10 rounded-lg transition-colors",
                 selected ? "bg-primary/10" : "bg-gray-100"
               )}>
-                {hasIcon ? (
-                  <TravelIcon
-                    slug={tag.slug}
-                    size={22}
-                    className={cn(
-                      "transition-colors",
-                      selected ? "text-primary" : "text-gray-500"
-                    )}
-                  />
-                ) : (
-                  <span className="text-lg">{tag.emoji}</span>
-                )}
+                <span className="text-2xl">{emoji}</span>
               </div>
 
               {/* Label */}
