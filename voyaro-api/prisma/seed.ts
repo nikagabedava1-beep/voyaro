@@ -6,20 +6,83 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('Seeding database...');
 
-  // Seed default trip tags
+  // Seed default trip tags - comprehensive list of travel interests
   const defaultTags = [
+    // Beach & Water
     { slug: 'beach', emoji: '🏖', labelEn: 'Beach', labelKa: 'პლაჟი', sortOrder: 1 },
-    { slug: 'adventure', emoji: '🏔', labelEn: 'Adventure', labelKa: 'თავგადასავალი', sortOrder: 2 },
-    { slug: 'city', emoji: '🏙', labelEn: 'City', labelKa: 'ქალაქი', sortOrder: 3 },
-    { slug: 'culture', emoji: '🏛', labelEn: 'Culture', labelKa: 'კულტურა', sortOrder: 4 },
-    { slug: 'nightlife', emoji: '🎉', labelEn: 'Nightlife', labelKa: 'ღამის ცხოვრება', sortOrder: 5 },
-    { slug: 'relax', emoji: '🧘', labelEn: 'Relax', labelKa: 'დასვენება', sortOrder: 6 },
-    { slug: 'hiking', emoji: '🥾', labelEn: 'Hiking', labelKa: 'ლაშქრობა', sortOrder: 7 },
-    { slug: 'food_wine', emoji: '🍷', labelEn: 'Food & Wine', labelKa: 'საკვები და ღვინო', sortOrder: 8 },
-    { slug: 'boat', emoji: '🚤', labelEn: 'Boat', labelKa: 'ნავი', sortOrder: 9 },
-    { slug: 'activities', emoji: '🎢', labelEn: 'Fun / Activities', labelKa: 'გართობა', sortOrder: 10 },
-    { slug: 'family', emoji: '👨‍👩‍👧', labelEn: 'Family-friendly', labelKa: 'საოჯახო', sortOrder: 11 },
-    { slug: 'romantic', emoji: '💑', labelEn: 'Romantic', labelKa: 'რომანტიული', sortOrder: 12 },
+    { slug: 'swimming', emoji: '🏊', labelEn: 'Swimming', labelKa: 'ცურვა', sortOrder: 2 },
+    { slug: 'surfing', emoji: '🏄', labelEn: 'Surfing', labelKa: 'სერფინგი', sortOrder: 3 },
+    { slug: 'diving', emoji: '🤿', labelEn: 'Diving', labelKa: 'ყვინთვა', sortOrder: 4 },
+    { slug: 'boat', emoji: '🚤', labelEn: 'Boating', labelKa: 'ნავით სეირნობა', sortOrder: 5 },
+    { slug: 'cruise', emoji: '🛳', labelEn: 'Cruise', labelKa: 'კრუიზი', sortOrder: 6 },
+
+    // Mountains & Adventure
+    { slug: 'adventure', emoji: '🏔', labelEn: 'Adventure', labelKa: 'თავგადასავალი', sortOrder: 10 },
+    { slug: 'hiking', emoji: '🥾', labelEn: 'Hiking', labelKa: 'ლაშქრობა', sortOrder: 11 },
+    { slug: 'camping', emoji: '⛺', labelEn: 'Camping', labelKa: 'კემპინგი', sortOrder: 12 },
+    { slug: 'climbing', emoji: '🧗', labelEn: 'Climbing', labelKa: 'ალპინიზმი', sortOrder: 13 },
+    { slug: 'skiing', emoji: '⛷', labelEn: 'Skiing', labelKa: 'სათხილამურო', sortOrder: 14 },
+    { slug: 'snowboarding', emoji: '🏂', labelEn: 'Snowboarding', labelKa: 'სნოუბორდი', sortOrder: 15 },
+
+    // City & Urban
+    { slug: 'city', emoji: '🏙', labelEn: 'City Break', labelKa: 'ქალაქი', sortOrder: 20 },
+    { slug: 'shopping', emoji: '🛍', labelEn: 'Shopping', labelKa: 'შოპინგი', sortOrder: 21 },
+    { slug: 'nightlife', emoji: '🌃', labelEn: 'Nightlife', labelKa: 'ღამის ცხოვრება', sortOrder: 22 },
+    { slug: 'casino', emoji: '🎰', labelEn: 'Casino', labelKa: 'კაზინო', sortOrder: 23 },
+
+    // Culture & History
+    { slug: 'culture', emoji: '🏛', labelEn: 'Culture', labelKa: 'კულტურა', sortOrder: 30 },
+    { slug: 'museum', emoji: '🖼', labelEn: 'Museums', labelKa: 'მუზეუმები', sortOrder: 31 },
+    { slug: 'temple', emoji: '🛕', labelEn: 'Temples', labelKa: 'ტაძრები', sortOrder: 32 },
+    { slug: 'castle', emoji: '🏰', labelEn: 'Castles', labelKa: 'ციხეები', sortOrder: 33 },
+    { slug: 'art', emoji: '🎨', labelEn: 'Art', labelKa: 'ხელოვნება', sortOrder: 34 },
+    { slug: 'theater', emoji: '🎭', labelEn: 'Theater', labelKa: 'თეატრი', sortOrder: 35 },
+    { slug: 'music', emoji: '🎵', labelEn: 'Music', labelKa: 'მუსიკა', sortOrder: 36 },
+
+    // Food & Drink
+    { slug: 'food_wine', emoji: '🍷', labelEn: 'Food & Wine', labelKa: 'საკვები და ღვინო', sortOrder: 40 },
+    { slug: 'local_cuisine', emoji: '🍽', labelEn: 'Local Cuisine', labelKa: 'ადგილობრივი სამზარეულო', sortOrder: 41 },
+    { slug: 'coffee', emoji: '☕', labelEn: 'Coffee Culture', labelKa: 'ყავის კულტურა', sortOrder: 42 },
+    { slug: 'beer', emoji: '🍺', labelEn: 'Craft Beer', labelKa: 'ხელნაკეთი ლუდი', sortOrder: 43 },
+
+    // Nature & Wildlife
+    { slug: 'wildlife', emoji: '🦁', labelEn: 'Wildlife', labelKa: 'ველური ბუნება', sortOrder: 50 },
+    { slug: 'safari', emoji: '🦒', labelEn: 'Safari', labelKa: 'საფარი', sortOrder: 51 },
+    { slug: 'forest', emoji: '🌲', labelEn: 'Forest', labelKa: 'ტყე', sortOrder: 52 },
+    { slug: 'garden', emoji: '🌸', labelEn: 'Gardens', labelKa: 'ბაღები', sortOrder: 53 },
+    { slug: 'birdwatching', emoji: '🦅', labelEn: 'Birdwatching', labelKa: 'ფრინველების დაკვირვება', sortOrder: 54 },
+
+    // Wellness & Relaxation
+    { slug: 'relax', emoji: '🧘', labelEn: 'Relaxation', labelKa: 'დასვენება', sortOrder: 60 },
+    { slug: 'spa', emoji: '💆', labelEn: 'Spa', labelKa: 'სპა', sortOrder: 61 },
+    { slug: 'yoga', emoji: '🧘', labelEn: 'Yoga', labelKa: 'იოგა', sortOrder: 62 },
+    { slug: 'meditation', emoji: '🪷', labelEn: 'Meditation', labelKa: 'მედიტაცია', sortOrder: 63 },
+    { slug: 'hot_spring', emoji: '♨', labelEn: 'Hot Springs', labelKa: 'ცხელი წყაროები', sortOrder: 64 },
+
+    // Active & Sports
+    { slug: 'activities', emoji: '🎢', labelEn: 'Activities', labelKa: 'აქტივობები', sortOrder: 70 },
+    { slug: 'golf', emoji: '⛳', labelEn: 'Golf', labelKa: 'გოლფი', sortOrder: 71 },
+    { slug: 'tennis', emoji: '🎾', labelEn: 'Tennis', labelKa: 'ჩოგბურთი', sortOrder: 72 },
+    { slug: 'cycling', emoji: '🚴', labelEn: 'Cycling', labelKa: 'ველოსიპედი', sortOrder: 73 },
+    { slug: 'running', emoji: '🏃', labelEn: 'Running', labelKa: 'სირბილი', sortOrder: 74 },
+    { slug: 'fishing', emoji: '🎣', labelEn: 'Fishing', labelKa: 'თევზაობა', sortOrder: 75 },
+
+    // Special Interest
+    { slug: 'photography', emoji: '📷', labelEn: 'Photography', labelKa: 'ფოტოგრაფია', sortOrder: 80 },
+    { slug: 'road_trip', emoji: '🚗', labelEn: 'Road Trip', labelKa: 'საავტომობილო მოგზაურობა', sortOrder: 81 },
+    { slug: 'train', emoji: '🚂', labelEn: 'Train Journey', labelKa: 'მატარებლით მოგზაურობა', sortOrder: 82 },
+    { slug: 'helicopter', emoji: '🚁', labelEn: 'Helicopter Tours', labelKa: 'ვერტმფრენის ტურები', sortOrder: 83 },
+    { slug: 'hot_air_balloon', emoji: '🎈', labelEn: 'Hot Air Balloon', labelKa: 'საჰაერო ბუშტი', sortOrder: 84 },
+
+    // Family & Social
+    { slug: 'family', emoji: '👨‍👩‍👧', labelEn: 'Family-friendly', labelKa: 'საოჯახო', sortOrder: 90 },
+    { slug: 'romantic', emoji: '💑', labelEn: 'Romantic', labelKa: 'რომანტიული', sortOrder: 91 },
+    { slug: 'solo', emoji: '🧳', labelEn: 'Solo Travel', labelKa: 'მარტო მოგზაურობა', sortOrder: 92 },
+    { slug: 'group', emoji: '👥', labelEn: 'Group Travel', labelKa: 'ჯგუფური მოგზაურობა', sortOrder: 93 },
+    { slug: 'pet_friendly', emoji: '🐕', labelEn: 'Pet Friendly', labelKa: 'შინაური ცხოველებით', sortOrder: 94 },
+
+    // Luxury
+    { slug: 'luxury', emoji: '⭐', labelEn: 'Luxury', labelKa: 'ლუქსი', sortOrder: 100 },
   ];
 
   console.log('Creating trip tags...');

@@ -11,18 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { TagSelector } from "@/components/ui/tag-selector";
 import { ArrowLeft } from "lucide-react";
-
-const themes = [
-  "Cultural & Historical",
-  "Adventure & Nature",
-  "Beach & Relaxation",
-  "City Break",
-  "Food & Wine",
-  "Active & Sports",
-  "Wellness & Spa",
-  "Family Fun",
-];
 
 const destinations = [
   "Italy",
@@ -46,10 +36,10 @@ export default function CreateTripPage() {
     title: "",
     description: "",
     destination: "",
-    theme: "",
     minParticipants: "2",
     maxParticipants: "12",
   });
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -77,7 +67,7 @@ export default function CreateTripPage() {
         title: formData.title,
         description: formData.description || undefined,
         destination: formData.destination,
-        theme: formData.theme || undefined,
+        selectedTags: selectedTags.length > 0 ? selectedTags : undefined,
         minParticipants: parseInt(formData.minParticipants),
         maxParticipants: parseInt(formData.maxParticipants),
       });
@@ -149,23 +139,18 @@ export default function CreateTripPage() {
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="theme">Trip Theme (optional)</Label>
-                <Select
-                  value={formData.theme}
-                  onValueChange={(value) => handleSelectChange("theme", value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select theme" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {themes.map((theme) => (
-                      <SelectItem key={theme} value={theme}>
-                        {theme}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <div className="space-y-3">
+                <Label>Trip Interests (optional)</Label>
+                <p className="text-sm text-muted-foreground -mt-1">
+                  What type of experiences are you looking for?
+                </p>
+                <TagSelector
+                  selectedTags={selectedTags}
+                  onChange={setSelectedTags}
+                  maxSelections={5}
+                  showCounter={true}
+                  columns={2}
+                />
               </div>
 
               <div className="space-y-2">
