@@ -15,18 +15,153 @@ import { TagSelector } from "@/components/ui/tag-selector";
 import { ArrowLeft } from "lucide-react";
 
 const destinations = [
-  "Italy",
-  "Spain",
-  "Greece",
-  "Croatia",
-  "Portugal",
-  "France",
-  "Germany",
-  "Japan",
-  "Thailand",
-  "Mexico",
-  "Peru",
-  "Morocco",
+  // Popular Destinations
+  { value: "anywhere", label: "🌍 Anywhere - Let companies suggest", isFlexible: true },
+
+  // Europe
+  { value: "Albania", label: "🇦🇱 Albania" },
+  { value: "Andorra", label: "🇦🇩 Andorra" },
+  { value: "Austria", label: "🇦🇹 Austria" },
+  { value: "Belarus", label: "🇧🇾 Belarus" },
+  { value: "Belgium", label: "🇧🇪 Belgium" },
+  { value: "Bosnia and Herzegovina", label: "🇧🇦 Bosnia and Herzegovina" },
+  { value: "Bulgaria", label: "🇧🇬 Bulgaria" },
+  { value: "Croatia", label: "🇭🇷 Croatia" },
+  { value: "Cyprus", label: "🇨🇾 Cyprus" },
+  { value: "Czech Republic", label: "🇨🇿 Czech Republic" },
+  { value: "Denmark", label: "🇩🇰 Denmark" },
+  { value: "Estonia", label: "🇪🇪 Estonia" },
+  { value: "Finland", label: "🇫🇮 Finland" },
+  { value: "France", label: "🇫🇷 France" },
+  { value: "Georgia", label: "🇬🇪 Georgia" },
+  { value: "Germany", label: "🇩🇪 Germany" },
+  { value: "Greece", label: "🇬🇷 Greece" },
+  { value: "Hungary", label: "🇭🇺 Hungary" },
+  { value: "Iceland", label: "🇮🇸 Iceland" },
+  { value: "Ireland", label: "🇮🇪 Ireland" },
+  { value: "Italy", label: "🇮🇹 Italy" },
+  { value: "Latvia", label: "🇱🇻 Latvia" },
+  { value: "Lithuania", label: "🇱🇹 Lithuania" },
+  { value: "Luxembourg", label: "🇱🇺 Luxembourg" },
+  { value: "Malta", label: "🇲🇹 Malta" },
+  { value: "Moldova", label: "🇲🇩 Moldova" },
+  { value: "Monaco", label: "🇲🇨 Monaco" },
+  { value: "Montenegro", label: "🇲🇪 Montenegro" },
+  { value: "Netherlands", label: "🇳🇱 Netherlands" },
+  { value: "North Macedonia", label: "🇲🇰 North Macedonia" },
+  { value: "Norway", label: "🇳🇴 Norway" },
+  { value: "Poland", label: "🇵🇱 Poland" },
+  { value: "Portugal", label: "🇵🇹 Portugal" },
+  { value: "Romania", label: "🇷🇴 Romania" },
+  { value: "Russia", label: "🇷🇺 Russia" },
+  { value: "San Marino", label: "🇸🇲 San Marino" },
+  { value: "Serbia", label: "🇷🇸 Serbia" },
+  { value: "Slovakia", label: "🇸🇰 Slovakia" },
+  { value: "Slovenia", label: "🇸🇮 Slovenia" },
+  { value: "Spain", label: "🇪🇸 Spain" },
+  { value: "Sweden", label: "🇸🇪 Sweden" },
+  { value: "Switzerland", label: "🇨🇭 Switzerland" },
+  { value: "Turkey", label: "🇹🇷 Turkey" },
+  { value: "Ukraine", label: "🇺🇦 Ukraine" },
+  { value: "United Kingdom", label: "🇬🇧 United Kingdom" },
+
+  // Asia
+  { value: "Armenia", label: "🇦🇲 Armenia" },
+  { value: "Azerbaijan", label: "🇦🇿 Azerbaijan" },
+  { value: "Bahrain", label: "🇧🇭 Bahrain" },
+  { value: "Bangladesh", label: "🇧🇩 Bangladesh" },
+  { value: "Bhutan", label: "🇧🇹 Bhutan" },
+  { value: "Brunei", label: "🇧🇳 Brunei" },
+  { value: "Cambodia", label: "🇰🇭 Cambodia" },
+  { value: "China", label: "🇨🇳 China" },
+  { value: "India", label: "🇮🇳 India" },
+  { value: "Indonesia", label: "🇮🇩 Indonesia" },
+  { value: "Israel", label: "🇮🇱 Israel" },
+  { value: "Japan", label: "🇯🇵 Japan" },
+  { value: "Jordan", label: "🇯🇴 Jordan" },
+  { value: "Kazakhstan", label: "🇰🇿 Kazakhstan" },
+  { value: "Kuwait", label: "🇰🇼 Kuwait" },
+  { value: "Kyrgyzstan", label: "🇰🇬 Kyrgyzstan" },
+  { value: "Laos", label: "🇱🇦 Laos" },
+  { value: "Lebanon", label: "🇱🇧 Lebanon" },
+  { value: "Malaysia", label: "🇲🇾 Malaysia" },
+  { value: "Maldives", label: "🇲🇻 Maldives" },
+  { value: "Mongolia", label: "🇲🇳 Mongolia" },
+  { value: "Myanmar", label: "🇲🇲 Myanmar" },
+  { value: "Nepal", label: "🇳🇵 Nepal" },
+  { value: "Oman", label: "🇴🇲 Oman" },
+  { value: "Pakistan", label: "🇵🇰 Pakistan" },
+  { value: "Philippines", label: "🇵🇭 Philippines" },
+  { value: "Qatar", label: "🇶🇦 Qatar" },
+  { value: "Saudi Arabia", label: "🇸🇦 Saudi Arabia" },
+  { value: "Singapore", label: "🇸🇬 Singapore" },
+  { value: "South Korea", label: "🇰🇷 South Korea" },
+  { value: "Sri Lanka", label: "🇱🇰 Sri Lanka" },
+  { value: "Taiwan", label: "🇹🇼 Taiwan" },
+  { value: "Tajikistan", label: "🇹🇯 Tajikistan" },
+  { value: "Thailand", label: "🇹🇭 Thailand" },
+  { value: "Turkmenistan", label: "🇹🇲 Turkmenistan" },
+  { value: "United Arab Emirates", label: "🇦🇪 United Arab Emirates" },
+  { value: "Uzbekistan", label: "🇺🇿 Uzbekistan" },
+  { value: "Vietnam", label: "🇻🇳 Vietnam" },
+
+  // Africa
+  { value: "Algeria", label: "🇩🇿 Algeria" },
+  { value: "Botswana", label: "🇧🇼 Botswana" },
+  { value: "Egypt", label: "🇪🇬 Egypt" },
+  { value: "Ethiopia", label: "🇪🇹 Ethiopia" },
+  { value: "Ghana", label: "🇬🇭 Ghana" },
+  { value: "Kenya", label: "🇰🇪 Kenya" },
+  { value: "Madagascar", label: "🇲🇬 Madagascar" },
+  { value: "Mauritius", label: "🇲🇺 Mauritius" },
+  { value: "Morocco", label: "🇲🇦 Morocco" },
+  { value: "Namibia", label: "🇳🇦 Namibia" },
+  { value: "Nigeria", label: "🇳🇬 Nigeria" },
+  { value: "Rwanda", label: "🇷🇼 Rwanda" },
+  { value: "Senegal", label: "🇸🇳 Senegal" },
+  { value: "Seychelles", label: "🇸🇨 Seychelles" },
+  { value: "South Africa", label: "🇿🇦 South Africa" },
+  { value: "Tanzania", label: "🇹🇿 Tanzania" },
+  { value: "Tunisia", label: "🇹🇳 Tunisia" },
+  { value: "Uganda", label: "🇺🇬 Uganda" },
+  { value: "Zambia", label: "🇿🇲 Zambia" },
+  { value: "Zimbabwe", label: "🇿🇼 Zimbabwe" },
+
+  // North America
+  { value: "Canada", label: "🇨🇦 Canada" },
+  { value: "Costa Rica", label: "🇨🇷 Costa Rica" },
+  { value: "Cuba", label: "🇨🇺 Cuba" },
+  { value: "Dominican Republic", label: "🇩🇴 Dominican Republic" },
+  { value: "El Salvador", label: "🇸🇻 El Salvador" },
+  { value: "Guatemala", label: "🇬🇹 Guatemala" },
+  { value: "Honduras", label: "🇭🇳 Honduras" },
+  { value: "Jamaica", label: "🇯🇲 Jamaica" },
+  { value: "Mexico", label: "🇲🇽 Mexico" },
+  { value: "Nicaragua", label: "🇳🇮 Nicaragua" },
+  { value: "Panama", label: "🇵🇦 Panama" },
+  { value: "Puerto Rico", label: "🇵🇷 Puerto Rico" },
+  { value: "United States", label: "🇺🇸 United States" },
+
+  // South America
+  { value: "Argentina", label: "🇦🇷 Argentina" },
+  { value: "Bolivia", label: "🇧🇴 Bolivia" },
+  { value: "Brazil", label: "🇧🇷 Brazil" },
+  { value: "Chile", label: "🇨🇱 Chile" },
+  { value: "Colombia", label: "🇨🇴 Colombia" },
+  { value: "Ecuador", label: "🇪🇨 Ecuador" },
+  { value: "Paraguay", label: "🇵🇾 Paraguay" },
+  { value: "Peru", label: "🇵🇪 Peru" },
+  { value: "Uruguay", label: "🇺🇾 Uruguay" },
+  { value: "Venezuela", label: "🇻🇪 Venezuela" },
+
+  // Oceania
+  { value: "Australia", label: "🇦🇺 Australia" },
+  { value: "Fiji", label: "🇫🇯 Fiji" },
+  { value: "New Zealand", label: "🇳🇿 New Zealand" },
+  { value: "Papua New Guinea", label: "🇵🇬 Papua New Guinea" },
+  { value: "Samoa", label: "🇼🇸 Samoa" },
+  { value: "Tonga", label: "🇹🇴 Tonga" },
+  { value: "Vanuatu", label: "🇻🇺 Vanuatu" },
 ];
 
 export default function CreateTripPage() {
@@ -63,10 +198,11 @@ export default function CreateTripPage() {
     setIsLoading(true);
 
     try {
+      const isFlexibleDestination = formData.destination === "anywhere";
       const trip = await trips.create(token, {
         title: formData.title,
         description: formData.description || undefined,
-        destination: formData.destination,
+        destination: isFlexibleDestination ? "Anywhere" : formData.destination,
         selectedTags: selectedTags.length > 0 ? selectedTags : undefined,
         minParticipants: parseInt(formData.minParticipants),
         maxParticipants: parseInt(formData.maxParticipants),
@@ -129,14 +265,21 @@ export default function CreateTripPage() {
                   <SelectTrigger>
                     <SelectValue placeholder="Select destination" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="max-h-[300px]">
                     {destinations.map((dest) => (
-                      <SelectItem key={dest} value={dest}>
-                        {dest}
+                      <SelectItem
+                        key={dest.value}
+                        value={dest.value}
+                        className={dest.isFlexible ? "font-medium text-primary" : ""}
+                      >
+                        {dest.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
+                <p className="text-xs text-muted-foreground">
+                  Choose &quot;Anywhere&quot; to let tour companies suggest destinations based on your interests
+                </p>
               </div>
 
               <div className="space-y-3">
