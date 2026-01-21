@@ -44,7 +44,7 @@ pull_code() {
     log_info "Pulling latest code from repository..."
     cd "$PROJECT_DIR"
     git fetch origin
-    git reset --hard origin/main
+    git reset --hard origin/master
     log_info "Code updated successfully"
 }
 
