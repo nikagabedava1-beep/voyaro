@@ -120,7 +120,7 @@ export function TagSelector({
         {tags.map((tag) => {
           const selected = isSelected(tag.slug);
           const isDisabled = disabled || (!selected && isMaxReached);
-          const hasIcon = travelIcons[tag.slug];
+          const hasIcon = tag.slug in travelIcons;
 
           return (
             <button
