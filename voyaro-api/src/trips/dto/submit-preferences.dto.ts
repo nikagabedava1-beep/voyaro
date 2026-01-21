@@ -32,6 +32,11 @@ export class SubmitPreferencesDto {
   dealBreakers?: string[];
 
   @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  selectedTags?: string[];
+
+  @IsOptional()
   @IsString()
   notes?: string;
 }

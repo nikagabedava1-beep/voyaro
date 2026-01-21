@@ -6,6 +6,32 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('Seeding database...');
 
+  // Seed default trip tags
+  const defaultTags = [
+    { slug: 'beach', emoji: '🏖', labelEn: 'Beach', labelKa: 'პლაჟი', sortOrder: 1 },
+    { slug: 'adventure', emoji: '🏔', labelEn: 'Adventure', labelKa: 'თავგადასავალი', sortOrder: 2 },
+    { slug: 'city', emoji: '🏙', labelEn: 'City', labelKa: 'ქალაქი', sortOrder: 3 },
+    { slug: 'culture', emoji: '🏛', labelEn: 'Culture', labelKa: 'კულტურა', sortOrder: 4 },
+    { slug: 'nightlife', emoji: '🎉', labelEn: 'Nightlife', labelKa: 'ღამის ცხოვრება', sortOrder: 5 },
+    { slug: 'relax', emoji: '🧘', labelEn: 'Relax', labelKa: 'დასვენება', sortOrder: 6 },
+    { slug: 'hiking', emoji: '🥾', labelEn: 'Hiking', labelKa: 'ლაშქრობა', sortOrder: 7 },
+    { slug: 'food_wine', emoji: '🍷', labelEn: 'Food & Wine', labelKa: 'საკვები და ღვინო', sortOrder: 8 },
+    { slug: 'boat', emoji: '🚤', labelEn: 'Boat', labelKa: 'ნავი', sortOrder: 9 },
+    { slug: 'activities', emoji: '🎢', labelEn: 'Fun / Activities', labelKa: 'გართობა', sortOrder: 10 },
+    { slug: 'family', emoji: '👨‍👩‍👧', labelEn: 'Family-friendly', labelKa: 'საოჯახო', sortOrder: 11 },
+    { slug: 'romantic', emoji: '💑', labelEn: 'Romantic', labelKa: 'რომანტიული', sortOrder: 12 },
+  ];
+
+  console.log('Creating trip tags...');
+  for (const tag of defaultTags) {
+    await prisma.tripTag.upsert({
+      where: { slug: tag.slug },
+      update: {},
+      create: tag,
+    });
+  }
+  console.log(`Created ${defaultTags.length} trip tags`);
+
   // Create admin user
   const adminPassword = await bcrypt.hash('admin123', 10);
   const admin = await prisma.user.upsert({
@@ -133,7 +159,12 @@ async function main() {
   });
   console.log('Created trip:', trip.title);
 
-  // Add preferences
+  // Add preferences with selected tags
+  const tagSets = [
+    ['culture', 'food_wine', 'city'],
+    ['culture', 'hiking', 'relax'],
+    ['culture', 'food_wine', 'nightlife'],
+  ];
   await Promise.all(
     travelers.map((traveler, index) =>
       prisma.preference.create({
@@ -146,13 +177,14 @@ async function main() {
           mustHaves: ['Hotels', 'Tours', 'Transportation'],
           niceToHaves: ['Airport transfers', 'Travel insurance'],
           dealBreakers: ['Hostels'],
+          selectedTags: tagSets[index],
         },
       })
     )
   );
   console.log('Created preferences for all travelers');
 
-  // Create group profile
+  // Create group profile with aggregated tags
   await prisma.groupProfile.create({
     data: {
       tripId: trip.id,
@@ -163,6 +195,8 @@ async function main() {
       commonMustHaves: ['Hotels', 'Tours', 'Transportation'],
       commonNiceToHaves: ['Airport transfers'],
       commonDealBreakers: ['Hostels'],
+      topTags: ['culture', 'food_wine', 'hiking'],
+      tagCounts: { culture: 3, food_wine: 2, city: 1, hiking: 1, relax: 1, nightlife: 1 },
       bestStartDate: new Date('2024-06-15'),
       bestEndDate: new Date('2024-06-25'),
       dateOverlapScore: 0.9,

@@ -11,6 +11,7 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { AdminModule } from './admin/admin.module';
 import { AlgorithmsModule } from './algorithms/algorithms.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
+import { TagsModule } from './tags/tags.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { SchedulerModule } from './scheduler/scheduler.module';
     AdminModule,
     AlgorithmsModule,
     SchedulerModule,
+    TagsModule,
   ],
 })
 export class AppModule {}

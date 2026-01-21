@@ -107,6 +107,7 @@ export const trips = {
     mustHaves?: string[];
     niceToHaves?: string[];
     dealBreakers?: string[];
+    selectedTags?: string[];
   }) => request(`/trips/${id}/preferences`, { method: "POST", token, body: JSON.stringify(data) }),
 
   confirm: (token: string, id: string) =>
@@ -202,6 +203,38 @@ export const subscriptions = {
 
   createPortal: (token: string) =>
     request("/subscriptions/portal", { method: "POST", token }),
+};
+
+// Tags
+export const tags = {
+  // Public - get active tags
+  getAll: () => request("/tags"),
+
+  // Admin
+  getAllAdmin: (token: string) => request("/tags/admin", { token }),
+
+  getById: (token: string, id: string) => request(`/tags/admin/${id}`, { token }),
+
+  create: (token: string, data: {
+    slug: string;
+    emoji: string;
+    labelEn: string;
+    labelKa?: string;
+    isActive?: boolean;
+    sortOrder?: number;
+  }) => request("/tags/admin", { method: "POST", token, body: JSON.stringify(data) }),
+
+  update: (token: string, id: string, data: Partial<{
+    slug: string;
+    emoji: string;
+    labelEn: string;
+    labelKa: string;
+    isActive: boolean;
+    sortOrder: number;
+  }>) => request(`/tags/admin/${id}`, { method: "PATCH", token, body: JSON.stringify(data) }),
+
+  delete: (token: string, id: string) =>
+    request(`/tags/admin/${id}`, { method: "DELETE", token }),
 };
 
 // Admin

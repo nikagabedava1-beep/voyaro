@@ -7,3 +7,5 @@ export * from "./select";
 export * from "./slider";
 export * from "./tabs";
 export * from "./textarea";
+export * from "./tag-selector";
+export * from "./tag-badge";

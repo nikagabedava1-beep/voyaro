@@ -58,6 +58,20 @@ enum ComfortLevel {
 }
 
 // Models
+
+model TripTag {
+  id        String   @id @default(uuid())
+  slug      String   @unique    // e.g., "beach", "adventure"
+  emoji     String              // e.g., "🏖", "🏔"
+  labelEn   String              // "Beach"
+  labelKa   String?             // Georgian translation (optional)
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("trip_tags")
+}
 model User {
   id                String              @id @default(uuid())
   email             String              @unique
@@ -145,6 +159,7 @@ model Preference {
   mustHaves         String[]
   niceToHaves       String[]
   dealBreakers      String[]
+  selectedTags      String[]            // Array of tag slugs ["beach", "food_wine"]
   notes             String?
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
@@ -166,6 +181,8 @@ model GroupProfile {
   commonMustHaves   String[]
   commonNiceToHaves String[]
   commonDealBreakers String[]
+  topTags           String[]            // Top 3 most selected tags
+  tagCounts         Json?               // { "beach": 3, "hiking": 2 }
   bestStartDate     DateTime?           @db.Date
   bestEndDate       DateTime?           @db.Date
   dateOverlapScore  Float?
@@ -238,6 +255,7 @@ model Auction {
   maxBudget         Float?
   comfortLevel      ComfortLevel?
   requirements      String[]
+  tags              String[]            // From group profile topTags
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
 
@@ -261,10 +279,12 @@ model Offer {
   exclusions        String[]
   itinerary         String?
   validUntil        DateTime?
+  matchedTags       String[]            // Tags this offer provides
   score             Float               @default(0)
   priceScore        Float               @default(0)
   ratingScore       Float               @default(0)
   preferenceScore   Float               @default(0)
+  tagScore          Float               @default(0)
   voteCount         Int                 @default(0)
   submittedAt       DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
