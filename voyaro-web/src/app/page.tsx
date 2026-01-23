@@ -271,7 +271,7 @@ export default function LandingPage() {
               </ul>
               <div className="mb-6 h-5"></div>
               <Link href="/register/company">
-                <Button variant="outline" className="w-full border-white/30 text-white hover:bg-white/10">{translate(t.landing.joinAsCompany)}</Button>
+                <Button className="w-full bg-transparent border border-white/30 text-white hover:bg-white/10">{translate(t.landing.joinAsCompany)}</Button>
               </Link>
             </div>
           </div>
