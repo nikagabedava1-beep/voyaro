@@ -5,10 +5,13 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { useAuth } from "@/hooks/use-auth";
+import { useLanguage } from "@/contexts/language-context";
+import { t } from "@/lib/translations";
 import { Check, Users, Building2, Shield, Globe, Plane } from "lucide-react";
 
 export default function LandingPage() {
   const { user } = useAuth();
+  const { t: translate } = useLanguage();
 
   return (
     <div className="min-h-screen">
@@ -36,15 +39,15 @@ export default function LandingPage() {
             <LanguageSwitcher />
             {user ? (
               <Link href={user.role === "COMPANY_ADMIN" ? "/company" : user.role === "PLATFORM_ADMIN" ? "/admin" : "/trips"}>
-                <Button className="bg-white text-gray-900 hover:bg-gray-100">Dashboard</Button>
+                <Button className="bg-white text-gray-900 hover:bg-gray-100">{translate(t.nav.goToDashboard)}</Button>
               </Link>
             ) : (
               <>
                 <Link href="/login">
-                  <Button variant="ghost" className="text-white hover:bg-white/20">Sign In</Button>
+                  <Button variant="ghost" className="text-white hover:bg-white/20">{translate(t.nav.login)}</Button>
                 </Link>
                 <Link href="/register/traveler">
-                  <Button className="bg-white text-gray-900 hover:bg-gray-100">Start a Trip</Button>
+                  <Button className="bg-white text-gray-900 hover:bg-gray-100">{translate(t.nav.getStarted)}</Button>
                 </Link>
               </>
             )}
@@ -56,25 +59,25 @@ export default function LandingPage() {
           <div className="text-center max-w-4xl mx-auto">
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-white/90 text-sm mb-6">
               <Plane className="w-4 h-4" />
-              <span>Group travel made simple</span>
+              <span>{translate(t.landing.heroTagline)}</span>
             </div>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight tracking-tight">
-              Plan one trip.<br />
-              Get multiple offers.<br />
-              Choose the best.
+              {translate(t.landing.heroTitle1)}<br />
+              {translate(t.landing.heroTitle2)}<br />
+              {translate(t.landing.heroTitle3)}
             </h1>
             <p className="mt-6 text-lg md:text-xl text-white/80 max-w-2xl mx-auto">
-              Voyaro helps groups plan trips together and receive competing offers from verified local tour companies.
+              {translate(t.landing.heroDescription)}
             </p>
             <div className="mt-8 space-y-1 text-white/60">
-              <p>No searching.</p>
-              <p>No arguing.</p>
-              <p>No overpaying.</p>
+              <p>{translate(t.landing.noSearching)}</p>
+              <p>{translate(t.landing.noArguing)}</p>
+              <p>{translate(t.landing.noOverpaying)}</p>
             </div>
             <div className="mt-10">
               <Link href="/register/traveler">
                 <Button size="lg" className="text-base px-8 py-6 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 border-0 shadow-lg shadow-blue-500/25">
-                  Start a Trip — Free
+                  {translate(t.landing.startTripFree)}
                 </Button>
               </Link>
             </div>
@@ -95,7 +98,7 @@ export default function LandingPage() {
       <section className="bg-white border-b border-gray-100">
         <div className="container mx-auto px-4 py-12">
           <p className="text-center text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">
-            Voyaro is a group travel marketplace where tour companies compete for your trip — not the other way around.
+            {translate(t.landing.subHeroText)}
           </p>
         </div>
       </section>
@@ -104,7 +107,7 @@ export default function LandingPage() {
       <section className="bg-white py-24">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-16">
-            How It Works
+            {translate(t.landing.howItWorks)}
           </h2>
           <div className="grid md:grid-cols-3 gap-12 max-w-5xl mx-auto">
             {/* Step 1 */}
@@ -116,10 +119,10 @@ export default function LandingPage() {
                 <div className="absolute top-1/2 left-full w-full h-0.5 bg-gradient-to-r from-blue-200 to-transparent hidden md:block -translate-y-1/2" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                Create a group trip
+                {translate(t.landing.createTrip)}
               </h3>
               <p className="text-gray-600 leading-relaxed">
-                Choose destination ideas, dates, budget, and activities using simple visual tags. Invite friends and let everyone add their availability.
+                {translate(t.landing.createTripDesc)}
               </p>
             </div>
 
@@ -132,10 +135,10 @@ export default function LandingPage() {
                 <div className="absolute top-1/2 left-full w-full h-0.5 bg-gradient-to-r from-purple-200 to-transparent hidden md:block -translate-y-1/2" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                Agree once as a group
+                {translate(t.landing.agreeAsGroup)}
               </h3>
               <p className="text-gray-600 leading-relaxed">
-                Voyaro automatically finds the best dates for everyone and builds a group travel profile. No endless chats. No confusion.
+                {translate(t.landing.agreeAsGroupDesc)}
               </p>
             </div>
 
@@ -147,10 +150,10 @@ export default function LandingPage() {
                 </div>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                Receive competing offers
+                {translate(t.landing.receiveOffers)}
               </h3>
               <p className="text-gray-600 leading-relaxed">
-                Local tour companies review your trip and send their best offers. Compare, vote, and choose together.
+                {translate(t.landing.receiveOffersDesc)}
               </p>
             </div>
           </div>
@@ -161,7 +164,7 @@ export default function LandingPage() {
       <section className="bg-gradient-to-b from-gray-50 to-white py-20">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
-            Why Voyaro
+            {translate(t.landing.whyVoyaro)}
           </h2>
           <div className="max-w-2xl mx-auto">
             <ul className="space-y-4">
@@ -169,29 +172,29 @@ export default function LandingPage() {
                 <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <Check className="w-4 h-4 text-green-600" />
                 </div>
-                <span className="text-gray-700 text-lg">Designed specifically for groups</span>
+                <span className="text-gray-700 text-lg">{translate(t.landing.designedForGroups)}</span>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <Check className="w-4 h-4 text-green-600" />
                 </div>
-                <span className="text-gray-700 text-lg">Better prices through real competition</span>
+                <span className="text-gray-700 text-lg">{translate(t.landing.betterPrices)}</span>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <Check className="w-4 h-4 text-green-600" />
                 </div>
-                <span className="text-gray-700 text-lg">Offers from local experts only</span>
+                <span className="text-gray-700 text-lg">{translate(t.landing.localExperts)}</span>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <Check className="w-4 h-4 text-green-600" />
                 </div>
-                <span className="text-gray-700 text-lg">No hidden fees or commissions</span>
+                <span className="text-gray-700 text-lg">{translate(t.landing.noHiddenFees)}</span>
               </li>
             </ul>
             <p className="mt-8 text-center text-gray-500">
-              Voyaro doesn&apos;t sell trips — it helps you choose the best one.
+              {translate(t.landing.voyaroDoesntSell)}
             </p>
           </div>
         </div>
@@ -214,29 +217,29 @@ export default function LandingPage() {
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-xl flex items-center justify-center">
                   <Users className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold text-white">For Travelers</h3>
+                <h3 className="text-xl font-semibold text-white">{translate(t.landing.forTravelers)}</h3>
               </div>
               <ul className="space-y-3 mb-6">
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-cyan-400 mt-0.5 flex-shrink-0" />
-                  <span className="text-white/80">Plan trips everyone agrees on</span>
+                  <span className="text-white/80">{translate(t.landing.planTripsEveryone)}</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-cyan-400 mt-0.5 flex-shrink-0" />
-                  <span className="text-white/80">See all offers in one place</span>
+                  <span className="text-white/80">{translate(t.landing.seeAllOffers)}</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-cyan-400 mt-0.5 flex-shrink-0" />
-                  <span className="text-white/80">Choose based on price, comfort, and activities</span>
+                  <span className="text-white/80">{translate(t.landing.chooseBasedOn)}</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-cyan-400 mt-0.5 flex-shrink-0" />
-                  <span className="text-white/80">Stay in control as a group</span>
+                  <span className="text-white/80">{translate(t.landing.stayInControl)}</span>
                 </li>
               </ul>
-              <p className="text-sm text-white/50 mb-6">Always free for travelers.</p>
+              <p className="text-sm text-white/50 mb-6">{translate(t.landing.alwaysFree)}</p>
               <Link href="/register/traveler">
-                <Button className="w-full bg-white text-gray-900 hover:bg-gray-100">Start a Group Trip</Button>
+                <Button className="w-full bg-white text-gray-900 hover:bg-gray-100">{translate(t.landing.startGroupTrip)}</Button>
               </Link>
             </div>
 
@@ -246,29 +249,29 @@ export default function LandingPage() {
                 <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-400 rounded-xl flex items-center justify-center">
                   <Building2 className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold text-white">For Tour Companies</h3>
+                <h3 className="text-xl font-semibold text-white">{translate(t.landing.forTourCompanies)}</h3>
               </div>
               <ul className="space-y-3 mb-6">
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-pink-400 mt-0.5 flex-shrink-0" />
-                  <span className="text-white/80">Access ready-to-book group trips</span>
+                  <span className="text-white/80">{translate(t.landing.accessReadyTrips)}</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-pink-400 mt-0.5 flex-shrink-0" />
-                  <span className="text-white/80">Compete fairly and transparently</span>
+                  <span className="text-white/80">{translate(t.landing.competeFairly)}</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-pink-400 mt-0.5 flex-shrink-0" />
-                  <span className="text-white/80">No ads, no lead chasing</span>
+                  <span className="text-white/80">{translate(t.landing.noAds)}</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-pink-400 mt-0.5 flex-shrink-0" />
-                  <span className="text-white/80">Pay only for platform access</span>
+                  <span className="text-white/80">{translate(t.landing.payOnlyPlatform)}</span>
                 </li>
               </ul>
               <div className="mb-6 h-5"></div>
               <Link href="/register/company">
-                <Button variant="outline" className="w-full border-white/30 text-white hover:bg-white/10">Join as a Tour Company</Button>
+                <Button variant="outline" className="w-full border-white/30 text-white hover:bg-white/10">{translate(t.landing.joinAsCompany)}</Button>
               </Link>
             </div>
           </div>
@@ -281,9 +284,7 @@ export default function LandingPage() {
           <div className="flex items-start gap-4 max-w-2xl mx-auto">
             <Shield className="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" />
             <p className="text-sm text-gray-500 leading-relaxed">
-              Voyaro is a technology platform.
-              We do not sell tours or handle traveler payments.
-              All travel services are provided directly by verified tour companies.
+              {translate(t.landing.trustText)}
             </p>
           </div>
         </div>
@@ -293,14 +294,14 @@ export default function LandingPage() {
       <section className="bg-gradient-to-r from-blue-600 to-cyan-500 py-20">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Plan smarter. Travel together.
+            {translate(t.landing.planSmarter)}
           </h2>
           <p className="text-white/80 text-lg mb-10 max-w-2xl mx-auto">
-            Create a trip in minutes and let the best offers come to you.
+            {translate(t.landing.createInMinutes)}
           </p>
           <Link href="/register/traveler">
             <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-6 text-lg font-semibold">
-              Start Your Trip — Free
+              {translate(t.landing.startYourTrip)}
             </Button>
           </Link>
         </div>
@@ -315,12 +316,12 @@ export default function LandingPage() {
               <span className="text-xl font-semibold">Voyaro</span>
             </div>
             <div className="flex gap-6 text-sm text-gray-400">
-              <Link href="/login" className="hover:text-white transition-colors">Sign In</Link>
-              <Link href="/register/traveler" className="hover:text-white transition-colors">Start a Trip</Link>
-              <Link href="/register/company" className="hover:text-white transition-colors">For Companies</Link>
+              <Link href="/login" className="hover:text-white transition-colors">{translate(t.nav.login)}</Link>
+              <Link href="/register/traveler" className="hover:text-white transition-colors">{translate(t.landing.startGroupTrip)}</Link>
+              <Link href="/register/company" className="hover:text-white transition-colors">{translate(t.landing.forTourCompanies)}</Link>
             </div>
             <div className="text-sm text-gray-500">
-              &copy; 2025 Voyaro
+              &copy; 2025 Voyaro. {translate(t.footer.allRightsReserved)}
             </div>
           </div>
         </div>

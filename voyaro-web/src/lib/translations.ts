@@ -29,22 +29,84 @@ export const t = {
 
   // Landing Page
   landing: {
-    heroTitle: { ka: 'ჯგუფური მოგზაურობა,', en: 'Group Travel,' },
-    heroTitleHighlight: { ka: 'გამარტივებული', en: 'Simplified' },
+    // Hero
+    heroTagline: { ka: 'ჯგუფური მოგზაურობა გამარტივებული', en: 'Group travel made simple' },
+    heroTitle1: { ka: 'დაგეგმე ერთი მოგზაურობა.', en: 'Plan one trip.' },
+    heroTitle2: { ka: 'მიიღე მრავალი შეთავაზება.', en: 'Get multiple offers.' },
+    heroTitle3: { ka: 'აირჩიე საუკეთესო.', en: 'Choose the best.' },
     heroDescription: {
-      ka: 'დაგეგმეთ მოგზაურობა მეგობრებთან ერთად, იპოვეთ საუკეთესო თარიღები ყველასთვის და მიეცით ტურისტულ კომპანიებს საშუალება იბრძოლონ თქვენს ბიზნესზე ჩვენი უნიკალური აუქციონის სისტემის მეშვეობით.',
-      en: 'Plan trips with friends, find the best dates for everyone, and let tour companies compete for your business through our unique auction system.',
+      ka: 'Voyaro ეხმარება ჯგუფებს დაგეგმონ მოგზაურობა ერთად და მიიღონ კონკურენტული შეთავაზებები ვერიფიცირებული ადგილობრივი ტურისტული კომპანიებისგან.',
+      en: 'Voyaro helps groups plan trips together and receive competing offers from verified local tour companies.',
     },
-    planTrip: { ka: 'დაგეგმე მოგზაურობა', en: 'Plan a Trip' },
-    forTourCompanies: { ka: 'ტურისტული კომპანიებისთვის', en: 'For Tour Companies' },
+    noSearching: { ka: 'ძებნის გარეშე.', en: 'No searching.' },
+    noArguing: { ka: 'კამათის გარეშე.', en: 'No arguing.' },
+    noOverpaying: { ka: 'ზედმეტი გადახდის გარეშე.', en: 'No overpaying.' },
+    startTripFree: { ka: 'დაიწყე მოგზაურობა — უფასოდ', en: 'Start a Trip — Free' },
+
+    // Sub-hero
+    subHeroText: {
+      ka: 'Voyaro არის ჯგუფური მოგზაურობის მარკეტპლეისი, სადაც ტურისტული კომპანიები იბრძვიან შენს მოგზაურობაზე — და არა პირიქით.',
+      en: 'Voyaro is a group travel marketplace where tour companies compete for your trip — not the other way around.',
+    },
 
     // How it works
-    howItWorks: { ka: 'როგორ მუშაობს მოგზაურებისთვის', en: 'How It Works for Travelers' },
-    createTrip: { ka: 'შექმენი მოგზაურობა', en: 'Create a Trip' },
+    howItWorks: { ka: 'როგორ მუშაობს', en: 'How It Works' },
+    createTrip: { ka: 'შექმენი ჯგუფური მოგზაურობა', en: 'Create a group trip' },
     createTripDesc: {
-      ka: 'მიუთითე დანიშნულება, მოიწვიე მეგობრები და გააზიარე უნიკალური მოწვევის ლინკი',
-      en: 'Set your destination, invite friends, and share a unique invite link',
+      ka: 'აირჩიე დანიშნულების იდეები, თარიღები, ბიუჯეტი და აქტივობები მარტივი ვიზუალური თეგებით. მოიწვიე მეგობრები და მიეცი ყველას საშუალება დაამატოს თავისი ხელმისაწვდომობა.',
+      en: 'Choose destination ideas, dates, budget, and activities using simple visual tags. Invite friends and let everyone add their availability.',
     },
+    agreeAsGroup: { ka: 'შეთანხმდით ერთხელ ჯგუფად', en: 'Agree once as a group' },
+    agreeAsGroupDesc: {
+      ka: 'Voyaro ავტომატურად პოულობს საუკეთესო თარიღებს ყველასთვის და აშენებს ჯგუფური მოგზაურობის პროფილს. არანაირი უსასრულო ჩატები. არანაირი დაბნეულობა.',
+      en: 'Voyaro automatically finds the best dates for everyone and builds a group travel profile. No endless chats. No confusion.',
+    },
+    receiveOffers: { ka: 'მიიღე კონკურენტული შეთავაზებები', en: 'Receive competing offers' },
+    receiveOffersDesc: {
+      ka: 'ადგილობრივი ტურისტული კომპანიები განიხილავენ შენს მოგზაურობას და აგზავნიან საუკეთესო შეთავაზებებს. შეადარე, მიეცი ხმა და აირჩიე ერთად.',
+      en: 'Local tour companies review your trip and send their best offers. Compare, vote, and choose together.',
+    },
+
+    // Why Voyaro
+    whyVoyaro: { ka: 'რატომ Voyaro', en: 'Why Voyaro' },
+    designedForGroups: { ka: 'შექმნილია სპეციალურად ჯგუფებისთვის', en: 'Designed specifically for groups' },
+    betterPrices: { ka: 'უკეთესი ფასები რეალური კონკურენციის წყალობით', en: 'Better prices through real competition' },
+    localExperts: { ka: 'შეთავაზებები მხოლოდ ადგილობრივი ექსპერტებისგან', en: 'Offers from local experts only' },
+    noHiddenFees: { ka: 'არანაირი ფარული გადასახადები ან საკომისიოები', en: 'No hidden fees or commissions' },
+    voyaroDoesntSell: { ka: 'Voyaro არ ყიდის მოგზაურობებს — ის გეხმარება აირჩიო საუკეთესო.', en: "Voyaro doesn't sell trips — it helps you choose the best one." },
+
+    // For Travelers
+    forTravelers: { ka: 'მოგზაურებისთვის', en: 'For Travelers' },
+    planTripsEveryone: { ka: 'დაგეგმე მოგზაურობები, რომლებზეც ყველა თანახმაა', en: 'Plan trips everyone agrees on' },
+    seeAllOffers: { ka: 'ნახე ყველა შეთავაზება ერთ ადგილზე', en: 'See all offers in one place' },
+    chooseBasedOn: { ka: 'აირჩიე ფასის, კომფორტისა და აქტივობების მიხედვით', en: 'Choose based on price, comfort, and activities' },
+    stayInControl: { ka: 'დარჩი კონტროლში როგორც ჯგუფი', en: 'Stay in control as a group' },
+    alwaysFree: { ka: 'ყოველთვის უფასო მოგზაურებისთვის.', en: 'Always free for travelers.' },
+    startGroupTrip: { ka: 'დაიწყე ჯგუფური მოგზაურობა', en: 'Start a Group Trip' },
+
+    // For Tour Companies
+    forTourCompanies: { ka: 'ტურისტული კომპანიებისთვის', en: 'For Tour Companies' },
+    accessReadyTrips: { ka: 'მიიღე წვდომა დაჯავშნისთვის მზა ჯგუფურ მოგზაურობებზე', en: 'Access ready-to-book group trips' },
+    competeFairly: { ka: 'იბრძოლე სამართლიანად და გამჭვირვალედ', en: 'Compete fairly and transparently' },
+    noAds: { ka: 'არანაირი რეკლამები, არანაირი ლიდების დევნა', en: 'No ads, no lead chasing' },
+    payOnlyPlatform: { ka: 'გადაიხადე მხოლოდ პლატფორმაზე წვდომისთვის', en: 'Pay only for platform access' },
+    joinAsCompany: { ka: 'შემოგვიერთდი როგორც ტურისტული კომპანია', en: 'Join as a Tour Company' },
+
+    // Trust section
+    trustText: {
+      ka: 'Voyaro არის ტექნოლოგიური პლატფორმა. ჩვენ არ ვყიდით ტურებს და არ ვამუშავებთ მოგზაურთა გადახდებს. ყველა სამოგზაურო სერვისს პირდაპირ უზრუნველყოფენ ვერიფიცირებული ტურისტული კომპანიები.',
+      en: 'Voyaro is a technology platform. We do not sell tours or handle traveler payments. All travel services are provided directly by verified tour companies.',
+    },
+
+    // Final CTA
+    planSmarter: { ka: 'დაგეგმე ჭკვიანურად. იმოგზაურე ერთად.', en: 'Plan smarter. Travel together.' },
+    createInMinutes: { ka: 'შექმენი მოგზაურობა წუთებში და მიეცი საუკეთესო შეთავაზებებს საშუალება მოგაწიონ.', en: 'Create a trip in minutes and let the best offers come to you.' },
+    startYourTrip: { ka: 'დაიწყე შენი მოგზაურობა — უფასოდ', en: 'Start Your Trip — Free' },
+
+    // Legacy - keep for other pages
+    heroTitle: { ka: 'ჯგუფური მოგზაურობა,', en: 'Group Travel,' },
+    heroTitleHighlight: { ka: 'გამარტივებული', en: 'Simplified' },
+    planTrip: { ka: 'დაგეგმე მოგზაურობა', en: 'Plan a Trip' },
     collectPreferences: { ka: 'შეაგროვე პრეფერენციები', en: 'Collect Preferences' },
     collectPreferencesDesc: {
       ka: 'ყველა მიუთითებს თავის ხელმისაწვდომ თარიღებსა და მოგზაურობის პრეფერენციებს',
