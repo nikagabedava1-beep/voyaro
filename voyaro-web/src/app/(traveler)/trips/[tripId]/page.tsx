@@ -170,23 +170,13 @@ export default function TripDetailPage() {
             </Card>
 
             {/* Action Cards */}
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-1 gap-4">
               <Link href={`/trips/${trip.id}/dates`}>
                 <Card className="hover:shadow-md transition-shadow cursor-pointer h-full">
                   <CardHeader>
                     <CardTitle className="text-lg">Submit Dates</CardTitle>
                     <CardDescription>
                       Select your available dates for this trip
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-              </Link>
-              <Link href={`/trips/${trip.id}/preferences`}>
-                <Card className="hover:shadow-md transition-shadow cursor-pointer h-full">
-                  <CardHeader>
-                    <CardTitle className="text-lg">Set Preferences</CardTitle>
-                    <CardDescription>
-                      Share your budget and travel preferences
                     </CardDescription>
                   </CardHeader>
                 </Card>

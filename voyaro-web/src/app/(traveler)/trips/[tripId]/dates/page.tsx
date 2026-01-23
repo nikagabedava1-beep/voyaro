@@ -7,21 +7,91 @@ import { useAuth } from "@/hooks/use-auth";
 import { trips as tripsApi } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Calendar, Check } from "lucide-react";
+import { ArrowLeft, Calendar, Check, Users } from "lucide-react";
 import { addDays, format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isToday, isBefore } from "date-fns";
+import { Trip, TripParticipant } from "@/types";
+
+// Color palette for different members
+const memberColors = [
+  "bg-blue-500",
+  "bg-green-500",
+  "bg-purple-500",
+  "bg-orange-500",
+  "bg-pink-500",
+  "bg-teal-500",
+  "bg-red-500",
+  "bg-yellow-500",
+];
+
+interface MemberDateSelection {
+  oderId: string;
+  name: string;
+  initials: string;
+  color: string;
+  dates: string[];
+}
 
 export default function TripDatesPage() {
   const { tripId } = useParams();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const router = useRouter();
   const [selectedDates, setSelectedDates] = useState<string[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [trip, setTrip] = useState<Trip | null>(null);
+  const [memberSelections, setMemberSelections] = useState<MemberDateSelection[]>([]);
 
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(currentMonth);
   const days = eachDayOfInterval({ start: monthStart, end: monthEnd });
+
+  // Load trip data with participant date selections
+  useEffect(() => {
+    if (token && tripId) {
+      loadTripData();
+    }
+  }, [token, tripId]);
+
+  const loadTripData = async () => {
+    try {
+      const data = await tripsApi.getById(token!, tripId as string) as Trip;
+      setTrip(data);
+
+      // Extract member date selections
+      const selections: MemberDateSelection[] = data.participants
+        .filter(p => p.dateAvailabilities && p.dateAvailabilities.length > 0)
+        .map((participant, index) => ({
+          oderId: participant.userId,
+          name: `${participant.user.firstName} ${participant.user.lastName}`,
+          initials: `${participant.user.firstName[0]}${participant.user.lastName[0]}`,
+          color: memberColors[index % memberColors.length],
+          dates: participant.dateAvailabilities!
+            .filter(d => d.isAvailable)
+            .map(d => format(new Date(d.date), "yyyy-MM-dd")),
+        }));
+
+      setMemberSelections(selections);
+
+      // Load current user's previously selected dates
+      const currentUserParticipant = data.participants.find(p => p.userId === user?.id);
+      if (currentUserParticipant?.dateAvailabilities) {
+        const userDates = currentUserParticipant.dateAvailabilities
+          .filter(d => d.isAvailable)
+          .map(d => format(new Date(d.date), "yyyy-MM-dd"));
+        setSelectedDates(userDates);
+      }
+    } catch (error) {
+      console.error("Failed to load trip:", error);
+    }
+  };
+
+  // Get members who selected a specific date
+  const getMembersForDate = (dateStr: string) => {
+    return memberSelections.filter(member =>
+      member.dates.includes(dateStr) && member.oderId !== user?.id
+    );
+  };
 
   const toggleDate = (date: Date) => {
     if (isBefore(date, new Date())) return;
@@ -112,6 +182,7 @@ export default function TripDatesPage() {
                 const dateStr = format(day, "yyyy-MM-dd");
                 const isSelected = selectedDates.includes(dateStr);
                 const isPast = isBefore(day, new Date()) && !isToday(day);
+                const membersOnDate = getMembersForDate(dateStr);
 
                 return (
                   <button
@@ -119,17 +190,55 @@ export default function TripDatesPage() {
                     onClick={() => toggleDate(day)}
                     disabled={isPast}
                     className={`
-                      aspect-square flex items-center justify-center rounded-md text-sm transition-colors
+                      aspect-square flex flex-col items-center justify-center rounded-md text-sm transition-colors relative
                       ${isPast ? "text-muted-foreground opacity-50 cursor-not-allowed" : "cursor-pointer hover:bg-primary/10"}
                       ${isSelected ? "bg-primary text-primary-foreground" : ""}
                       ${isToday(day) && !isSelected ? "border-2 border-primary" : ""}
                     `}
+                    title={membersOnDate.length > 0 ? `Selected by: ${membersOnDate.map(m => m.name).join(", ")}` : undefined}
                   >
-                    {format(day, "d")}
+                    <span>{format(day, "d")}</span>
+                    {membersOnDate.length > 0 && (
+                      <div className="flex gap-0.5 mt-0.5 absolute bottom-1">
+                        {membersOnDate.slice(0, 3).map((member) => (
+                          <div
+                            key={member.oderId}
+                            className={`w-1.5 h-1.5 rounded-full ${member.color} ${isSelected ? "ring-1 ring-white" : ""}`}
+                          />
+                        ))}
+                        {membersOnDate.length > 3 && (
+                          <span className={`text-[8px] ${isSelected ? "text-white" : "text-muted-foreground"}`}>
+                            +{membersOnDate.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </button>
                 );
               })}
             </div>
+
+            {/* Member Legend */}
+            {memberSelections.length > 0 && (
+              <div className="mb-6 p-4 bg-muted/50 rounded-lg">
+                <div className="flex items-center gap-2 mb-3">
+                  <Users className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">Group Members&apos; Availability</span>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  {memberSelections.map((member) => (
+                    <div key={member.oderId} className="flex items-center gap-2">
+                      <div className={`w-3 h-3 rounded-full ${member.color}`} />
+                      <span className="text-sm">
+                        {member.name}
+                        {member.oderId === user?.id && " (You)"}
+                        <span className="text-muted-foreground ml-1">({member.dates.length} days)</span>
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Selected Dates Summary */}
             <div className="mb-6">
