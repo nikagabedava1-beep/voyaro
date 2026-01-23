@@ -15,14 +15,14 @@ interface AuthContextType {
   user: User | null;
   token: string | null;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, redirectUrl?: string) => Promise<void>;
   register: (data: {
     email: string;
     password: string;
     firstName: string;
     lastName: string;
     role?: string;
-  }) => Promise<void>;
+  }, redirectUrl?: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -55,14 +55,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, redirectUrl?: string) => {
     const response = (await authApi.login({ email, password })) as AuthResponse;
     setUser(response.user);
     setToken(response.accessToken);
     localStorage.setItem("token", response.accessToken);
 
-    // Redirect based on role
-    if (response.user.role === "PLATFORM_ADMIN") {
+    // Use redirect URL if provided, otherwise redirect based on role
+    if (redirectUrl) {
+      router.push(redirectUrl);
+    } else if (response.user.role === "PLATFORM_ADMIN") {
       router.push("/admin");
     } else if (response.user.role === "COMPANY_ADMIN") {
       router.push("/company");
@@ -77,13 +79,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     firstName: string;
     lastName: string;
     role?: string;
-  }) => {
+  }, redirectUrl?: string) => {
     const response = (await authApi.register(data)) as AuthResponse;
     setUser(response.user);
     setToken(response.accessToken);
     localStorage.setItem("token", response.accessToken);
 
-    if (data.role === "COMPANY_ADMIN") {
+    // Use redirect URL if provided, otherwise redirect based on role
+    if (redirectUrl) {
+      router.push(redirectUrl);
+    } else if (data.role === "COMPANY_ADMIN") {
       router.push("/register/company");
     } else {
       router.push("/trips");

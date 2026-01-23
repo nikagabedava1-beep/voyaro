@@ -1,15 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function RegisterTravelerPage() {
+function RegisterFormContent() {
   const { register } = useAuth();
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get("redirect");
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -47,7 +50,7 @@ export default function RegisterTravelerPage() {
         firstName: formData.firstName,
         lastName: formData.lastName,
         role: "TRAVELER",
-      });
+      }, redirectUrl || undefined);
     } catch (err: any) {
       setError(err.message || "Registration failed");
     } finally {
@@ -153,5 +156,17 @@ export default function RegisterTravelerPage() {
         </form>
       </Card>
     </div>
+  );
+}
+
+export default function RegisterTravelerPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    }>
+      <RegisterFormContent />
+    </Suspense>
   );
 }
