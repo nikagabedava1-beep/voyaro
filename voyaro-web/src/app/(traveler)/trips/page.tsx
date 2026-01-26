@@ -4,10 +4,13 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
+import { useLanguage } from "@/contexts/language-context";
+import { t } from "@/lib/translations";
 import { trips as tripsApi } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { formatDate } from "@/lib/utils";
 import { Plus, MapPin, Users, Gavel, LogOut } from "lucide-react";
 import { Trip, TripStatus } from "@/types";
@@ -21,20 +24,21 @@ const statusColors: Record<TripStatus, string> = {
   CANCELLED: "bg-red-500",
 };
 
-const statusLabels: Record<TripStatus, string> = {
-  COLLECTING_DATES: "Collecting Dates",
-  AUCTION_ACTIVE: "Auction Active",
-  AUCTION_ENDED: "Auction Ended",
-  WINNER_SELECTED: "Winner Selected",
-  COMPLETED: "Completed",
-  CANCELLED: "Cancelled",
-};
-
 export default function TripsPage() {
   const { user, token, isLoading: authLoading, logout } = useAuth();
+  const { t: translate } = useLanguage();
   const router = useRouter();
   const [trips, setTrips] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const statusLabels: Record<TripStatus, string> = {
+    COLLECTING_DATES: translate(t.trips.statusCollectingDates),
+    AUCTION_ACTIVE: translate(t.trips.statusAuctionActive),
+    AUCTION_ENDED: translate(t.trips.statusAuctionEnded),
+    WINNER_SELECTED: translate(t.trips.statusWinnerSelected),
+    COMPLETED: translate(t.trips.statusCompleted),
+    CANCELLED: translate(t.trips.statusCancelled),
+  };
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -76,12 +80,13 @@ export default function TripsPage() {
             Voyaro
           </Link>
           <div className="flex items-center gap-4">
+            <LanguageSwitcher />
             <span className="text-sm text-muted-foreground">
               {user.firstName} {user.lastName}
             </span>
             <Button variant="ghost" size="sm" onClick={logout}>
               <LogOut className="w-4 h-4 mr-2" />
-              Logout
+              {translate(t.nav.logout)}
             </Button>
           </div>
         </div>
@@ -91,15 +96,15 @@ export default function TripsPage() {
       <main className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold">My Trips</h1>
+            <h1 className="text-3xl font-bold">{translate(t.trips.myTrips)}</h1>
             <p className="text-muted-foreground">
-              Manage your group travel plans
+              {translate(t.trips.managePlans)}
             </p>
           </div>
           <Link href="/trips/create">
             <Button>
               <Plus className="w-4 h-4 mr-2" />
-              Create Trip
+              {translate(t.trips.createTrip)}
             </Button>
           </Link>
         </div>
@@ -112,12 +117,12 @@ export default function TripsPage() {
           <Card className="text-center py-12">
             <CardContent>
               <MapPin className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No trips yet</h3>
+              <h3 className="text-lg font-semibold mb-2">{translate(t.trips.noTripsYet)}</h3>
               <p className="text-muted-foreground mb-4">
-                Create your first trip and invite friends to join!
+                {translate(t.trips.createFirstTrip)}
               </p>
               <Link href="/trips/create">
-                <Button>Create Your First Trip</Button>
+                <Button>{translate(t.trips.createYourFirstTrip)}</Button>
               </Link>
             </CardContent>
           </Card>
@@ -144,19 +149,19 @@ export default function TripsPage() {
                     <div className="flex items-center justify-between text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Users className="w-4 h-4" />
-                        {trip.participantCount} participants
+                        {trip.participantCount} {translate(t.trips.participants)}
                       </div>
                       <div>{formatDate(trip.createdAt)}</div>
                     </div>
                     {trip.isCreator && (
                       <Badge variant="outline" className="mt-2">
-                        Organizer
+                        {translate(t.trips.organizer)}
                       </Badge>
                     )}
                     {trip.auction?.status === "ACTIVE" && (
                       <div className="mt-2 flex items-center gap-1 text-sm text-blue-600">
                         <Gavel className="w-4 h-4" />
-                        Auction in progress
+                        {translate(t.trips.auctionInProgress)}
                       </div>
                     )}
                   </CardContent>

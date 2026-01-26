@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
+import { useLanguage } from "@/contexts/language-context";
+import { t } from "@/lib/translations";
 import { trips as tripsApi } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { ArrowLeft, Calendar, Check, Users } from "lucide-react";
 import { addDays, format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isToday, isBefore } from "date-fns";
 import { Trip, TripParticipant } from "@/types";
@@ -34,6 +37,7 @@ interface MemberDateSelection {
 export default function TripDatesPage() {
   const { tripId } = useParams();
   const { token, user } = useAuth();
+  const { t: translate } = useLanguage();
   const router = useRouter();
   const [selectedDates, setSelectedDates] = useState<string[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -41,6 +45,16 @@ export default function TripDatesPage() {
   const [isSaved, setIsSaved] = useState(false);
   const [trip, setTrip] = useState<Trip | null>(null);
   const [memberSelections, setMemberSelections] = useState<MemberDateSelection[]>([]);
+
+  const dayNames = [
+    translate(t.dates.sun),
+    translate(t.dates.mon),
+    translate(t.dates.tue),
+    translate(t.dates.wed),
+    translate(t.dates.thu),
+    translate(t.dates.fri),
+    translate(t.dates.sat),
+  ];
 
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(currentMonth);
@@ -129,6 +143,11 @@ export default function TripDatesPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Language Switcher */}
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSwitcher />
+      </div>
+
       {/* Header */}
       <header className="bg-white border-b">
         <div className="container mx-auto px-4 py-4">
@@ -137,7 +156,7 @@ export default function TripDatesPage() {
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Trip
+            {translate(t.trips.backToTrip)}
           </Link>
         </div>
       </header>
@@ -148,27 +167,27 @@ export default function TripDatesPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Calendar className="w-5 h-5" />
-              Select Your Available Dates
+              {translate(t.dates.selectAvailableDates)}
             </CardTitle>
             <CardDescription>
-              Click on dates when you are available to travel
+              {translate(t.dates.clickOnDates)}
             </CardDescription>
           </CardHeader>
           <CardContent>
             {/* Month Navigation */}
             <div className="flex items-center justify-between mb-4">
               <Button variant="outline" size="sm" onClick={previousMonth}>
-                Previous
+                {translate(t.dates.previous)}
               </Button>
               <h3 className="font-semibold">{format(currentMonth, "MMMM yyyy")}</h3>
               <Button variant="outline" size="sm" onClick={nextMonth}>
-                Next
+                {translate(t.dates.next)}
               </Button>
             </div>
 
             {/* Calendar Grid */}
             <div className="grid grid-cols-7 gap-1 mb-6">
-              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+              {dayNames.map((day) => (
                 <div key={day} className="text-center text-sm font-medium text-muted-foreground py-2">
                   {day}
                 </div>
@@ -223,7 +242,7 @@ export default function TripDatesPage() {
               <div className="mb-6 p-4 bg-muted/50 rounded-lg">
                 <div className="flex items-center gap-2 mb-3">
                   <Users className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">Group Members&apos; Availability</span>
+                  <span className="text-sm font-medium">{translate(t.dates.groupMembersAvailability)}</span>
                 </div>
                 <div className="flex flex-wrap gap-3">
                   {memberSelections.map((member) => (
@@ -231,8 +250,8 @@ export default function TripDatesPage() {
                       <div className={`w-3 h-3 rounded-full ${member.color}`} />
                       <span className="text-sm">
                         {member.name}
-                        {member.oderId === user?.id && " (You)"}
-                        <span className="text-muted-foreground ml-1">({member.dates.length} days)</span>
+                        {member.oderId === user?.id && ` (${translate(t.dates.you)})`}
+                        <span className="text-muted-foreground ml-1">({member.dates.length} {translate(t.dates.days)})</span>
                       </span>
                     </div>
                   ))}
@@ -243,7 +262,7 @@ export default function TripDatesPage() {
             {/* Selected Dates Summary */}
             <div className="mb-6">
               <div className="text-sm text-muted-foreground mb-2">
-                {selectedDates.length} dates selected
+                {selectedDates.length} {translate(t.dates.datesSelected)}
               </div>
               {selectedDates.length > 0 && (
                 <div className="flex flex-wrap gap-2">
@@ -254,7 +273,7 @@ export default function TripDatesPage() {
                   ))}
                   {selectedDates.length > 10 && (
                     <span className="text-muted-foreground text-sm">
-                      +{selectedDates.length - 10} more
+                      +{selectedDates.length - 10} {translate(t.dates.more)}
                     </span>
                   )}
                 </div>
@@ -265,7 +284,7 @@ export default function TripDatesPage() {
             {isSaved ? (
               <div className="flex items-center justify-center gap-2 text-green-600 py-3">
                 <Check className="w-5 h-5" />
-                Dates saved! Redirecting...
+                {translate(t.dates.datesSaved)}
               </div>
             ) : (
               <Button
@@ -274,7 +293,7 @@ export default function TripDatesPage() {
                 isLoading={isLoading}
                 className="w-full"
               >
-                Save Dates
+                {translate(t.dates.saveDates)}
               </Button>
             )}
           </CardContent>

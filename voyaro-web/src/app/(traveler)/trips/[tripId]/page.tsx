@@ -4,10 +4,13 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
+import { useLanguage } from "@/contexts/language-context";
+import { t } from "@/lib/translations";
 import { trips as tripsApi, auctions } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { formatDate, formatCurrency, formatTimeRemaining } from "@/lib/utils";
 import { ArrowLeft, MapPin, Users, Calendar, Settings, Copy, Share2, Gavel, Star } from "lucide-react";
 import { Trip, TripStatus } from "@/types";
@@ -24,6 +27,7 @@ const statusColors: Record<TripStatus, string> = {
 export default function TripDetailPage() {
   const { tripId } = useParams();
   const { user, token } = useAuth();
+  const { t: translate } = useLanguage();
   const router = useRouter();
   const [trip, setTrip] = useState<Trip | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -82,9 +86,9 @@ export default function TripDetailPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Card className="text-center p-8">
-          <h2 className="text-xl font-semibold mb-2">Trip not found</h2>
+          <h2 className="text-xl font-semibold mb-2">{translate(t.trips.tripNotFound)}</h2>
           <Link href="/trips">
-            <Button>Back to Trips</Button>
+            <Button>{translate(t.trips.backToTrips)}</Button>
           </Link>
         </Card>
       </div>
@@ -96,12 +100,17 @@ export default function TripDetailPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Language Switcher */}
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSwitcher />
+      </div>
+
       {/* Header */}
       <header className="bg-white border-b">
         <div className="container mx-auto px-4 py-4">
           <Link href="/trips" className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
             <ArrowLeft className="w-4 h-4" />
-            Back to My Trips
+            {translate(t.trips.backToMyTrips)}
           </Link>
         </div>
       </header>
@@ -129,14 +138,14 @@ export default function TripDetailPage() {
                 </span>
                 <span className="flex items-center gap-1">
                   <Calendar className="w-4 h-4" />
-                  Created {formatDate(trip.createdAt)}
+                  {translate(t.trips.created)} {formatDate(trip.createdAt)}
                 </span>
               </div>
             </div>
             {isCreator && (
               <Button variant="outline" size="sm">
                 <Settings className="w-4 h-4 mr-2" />
-                Settings
+                {translate(t.trips.settings)}
               </Button>
             )}
           </div>
@@ -150,10 +159,10 @@ export default function TripDetailPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Share2 className="w-5 h-5" />
-                  Invite Friends
+                  {translate(t.trips.inviteFriends)}
                 </CardTitle>
                 <CardDescription>
-                  Share this link with friends to invite them to your trip
+                  {translate(t.trips.inviteFriendsDesc)}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -163,7 +172,7 @@ export default function TripDetailPage() {
                   </code>
                   <Button variant="outline" onClick={copyInviteLink}>
                     <Copy className="w-4 h-4 mr-2" />
-                    {copied ? "Copied!" : "Copy"}
+                    {copied ? translate(t.trips.copied) : translate(t.trips.copy)}
                   </Button>
                 </div>
               </CardContent>
@@ -174,9 +183,9 @@ export default function TripDetailPage() {
               <Link href={`/trips/${trip.id}/dates`}>
                 <Card className="hover:shadow-md transition-shadow cursor-pointer h-full">
                   <CardHeader>
-                    <CardTitle className="text-lg">Submit Dates</CardTitle>
+                    <CardTitle className="text-lg">{translate(t.trips.submitDates)}</CardTitle>
                     <CardDescription>
-                      Select your available dates for this trip
+                      {translate(t.trips.submitDatesDesc)}
                     </CardDescription>
                   </CardHeader>
                 </Card>
@@ -189,7 +198,7 @@ export default function TripDetailPage() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Gavel className="w-5 h-5" />
-                    Auction Status
+                    {translate(t.trips.auctionStatus)}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -198,14 +207,14 @@ export default function TripDetailPage() {
                       <div className="text-2xl font-bold">
                         {formatTimeRemaining(trip.auction.endsAt)}
                       </div>
-                      <div className="text-sm text-muted-foreground">Time remaining</div>
+                      <div className="text-sm text-muted-foreground">{translate(t.trips.timeRemaining)}</div>
                     </div>
                     <Badge className="bg-blue-500 text-white">
-                      {trip.auction.offers?.length || 0} offers
+                      {trip.auction.offers?.length || 0} {translate(t.trips.offers)}
                     </Badge>
                   </div>
                   <Link href={`/trips/${trip.id}/auction`}>
-                    <Button className="w-full">View Offers</Button>
+                    <Button className="w-full">{translate(t.trips.viewOffers)}</Button>
                   </Link>
                 </CardContent>
               </Card>
@@ -217,15 +226,15 @@ export default function TripDetailPage() {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Gavel className="w-5 h-5" />
-                      Ready to Start Auction
+                      {translate(t.trips.readyToStartAuction)}
                     </CardTitle>
                     <CardDescription>
-                      You have enough confirmed participants to start the auction
+                      {translate(t.trips.enoughParticipants)}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <Button onClick={startAuction} isLoading={isStartingAuction} className="w-full">
-                      Start 48-Hour Auction
+                      {translate(t.trips.start48HourAuction)}
                     </Button>
                   </CardContent>
                 </Card>
@@ -237,9 +246,9 @@ export default function TripDetailPage() {
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Participants</CardTitle>
+                <CardTitle>{translate(t.trips.participantsTitle)}</CardTitle>
                 <CardDescription>
-                  {confirmedParticipants} of {trip.maxParticipants} confirmed
+                  {confirmedParticipants} {translate(t.trips.ofConfirmed)} {trip.maxParticipants} {translate(t.trips.confirmed).toLowerCase()}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -256,12 +265,12 @@ export default function TripDetailPage() {
                             {participant.user.firstName} {participant.user.lastName}
                           </div>
                           {participant.userId === trip.creatorId && (
-                            <span className="text-xs text-muted-foreground">Organizer</span>
+                            <span className="text-xs text-muted-foreground">{translate(t.trips.organizer)}</span>
                           )}
                         </div>
                       </div>
                       <Badge variant={participant.isConfirmed ? "default" : "outline"}>
-                        {participant.isConfirmed ? "Confirmed" : "Pending"}
+                        {participant.isConfirmed ? translate(t.trips.confirmed) : translate(t.trips.pending)}
                       </Badge>
                     </li>
                   ))}
@@ -273,13 +282,13 @@ export default function TripDetailPage() {
             {trip.groupProfile && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Group Profile</CardTitle>
-                  <CardDescription>Aggregated preferences</CardDescription>
+                  <CardTitle>{translate(t.trips.groupProfile)}</CardTitle>
+                  <CardDescription>{translate(t.trips.aggregatedPreferences)}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   {trip.groupProfile.avgMinBudget && trip.groupProfile.avgMaxBudget && (
                     <div>
-                      <div className="text-sm text-muted-foreground">Budget Range</div>
+                      <div className="text-sm text-muted-foreground">{translate(t.trips.budgetRange)}</div>
                       <div className="font-medium">
                         {formatCurrency(trip.groupProfile.avgMinBudget)} -{" "}
                         {formatCurrency(trip.groupProfile.avgMaxBudget)}
@@ -287,12 +296,12 @@ export default function TripDetailPage() {
                     </div>
                   )}
                   <div>
-                    <div className="text-sm text-muted-foreground">Comfort Level</div>
+                    <div className="text-sm text-muted-foreground">{translate(t.trips.comfortLevel)}</div>
                     <div className="font-medium">{trip.groupProfile.primaryComfortLevel}</div>
                   </div>
                   {trip.groupProfile.bestStartDate && trip.groupProfile.bestEndDate && (
                     <div>
-                      <div className="text-sm text-muted-foreground">Best Dates</div>
+                      <div className="text-sm text-muted-foreground">{translate(t.trips.bestDates)}</div>
                       <div className="font-medium">
                         {formatDate(trip.groupProfile.bestStartDate)} -{" "}
                         {formatDate(trip.groupProfile.bestEndDate)}

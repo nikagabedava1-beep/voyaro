@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
+import { useLanguage } from "@/contexts/language-context";
+import { t } from "@/lib/translations";
 import { trips } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TagSelector } from "@/components/ui/tag-selector";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { ArrowLeft } from "lucide-react";
 
 const destinations = [
@@ -166,6 +169,7 @@ const destinations = [
 
 export default function CreateTripPage() {
   const { token } = useAuth();
+  const { t: translate } = useLanguage();
   const router = useRouter();
   const [formData, setFormData] = useState({
     title: "",
@@ -191,7 +195,7 @@ export default function CreateTripPage() {
     setError("");
 
     if (!token) {
-      setError("Please log in to create a trip");
+      setError(translate(t.trips.loginToCreate));
       return;
     }
 
@@ -217,12 +221,17 @@ export default function CreateTripPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Language Switcher */}
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSwitcher />
+      </div>
+
       {/* Header */}
       <header className="bg-white border-b">
         <div className="container mx-auto px-4 py-4">
           <Link href="/trips" className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
             <ArrowLeft className="w-4 h-4" />
-            Back to My Trips
+            {translate(t.trips.backToMyTrips)}
           </Link>
         </div>
       </header>
@@ -231,9 +240,9 @@ export default function CreateTripPage() {
       <main className="container mx-auto px-4 py-8 max-w-2xl">
         <Card>
           <CardHeader>
-            <CardTitle>Create a New Trip</CardTitle>
+            <CardTitle>{translate(t.trips.createNewTrip)}</CardTitle>
             <CardDescription>
-              Set up your group trip and invite friends to join
+              {translate(t.trips.setupGroupTrip)}
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>
@@ -245,25 +254,25 @@ export default function CreateTripPage() {
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="title">Trip Title</Label>
+                <Label htmlFor="title">{translate(t.trips.tripTitle)}</Label>
                 <Input
                   id="title"
                   name="title"
                   value={formData.title}
                   onChange={handleChange}
-                  placeholder="Summer Adventure 2024"
+                  placeholder={translate(t.trips.tripTitlePlaceholder)}
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="destination">Destination</Label>
+                <Label htmlFor="destination">{translate(t.trips.destination)}</Label>
                 <Select
                   value={formData.destination}
                   onValueChange={(value) => handleSelectChange("destination", value)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select destination" />
+                    <SelectValue placeholder={translate(t.trips.selectDestination)} />
                   </SelectTrigger>
                   <SelectContent className="max-h-[300px]">
                     {destinations.map((dest) => (
@@ -278,14 +287,14 @@ export default function CreateTripPage() {
                   </SelectContent>
                 </Select>
                 <p className="text-xs text-muted-foreground">
-                  Choose &quot;Anywhere&quot; to let tour companies suggest destinations based on your interests
+                  {translate(t.trips.anywhereHint)}
                 </p>
               </div>
 
               <div className="space-y-3">
-                <Label>Trip Interests (optional)</Label>
+                <Label>{translate(t.trips.tripInterests)}</Label>
                 <p className="text-sm text-muted-foreground -mt-1">
-                  What type of experiences are you looking for?
+                  {translate(t.trips.whatExperiences)}
                 </p>
                 <TagSelector
                   selectedTags={selectedTags}
@@ -297,20 +306,20 @@ export default function CreateTripPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Description (optional)</Label>
+                <Label htmlFor="description">{translate(t.trips.descriptionOptional)}</Label>
                 <Textarea
                   id="description"
                   name="description"
                   value={formData.description}
                   onChange={handleChange}
-                  placeholder="Describe your trip plans..."
+                  placeholder={translate(t.trips.describePlans)}
                   rows={3}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="minParticipants">Min Participants</Label>
+                  <Label htmlFor="minParticipants">{translate(t.trips.minParticipants)}</Label>
                   <Input
                     id="minParticipants"
                     name="minParticipants"
@@ -322,7 +331,7 @@ export default function CreateTripPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="maxParticipants">Max Participants</Label>
+                  <Label htmlFor="maxParticipants">{translate(t.trips.maxParticipants)}</Label>
                   <Input
                     id="maxParticipants"
                     name="maxParticipants"
@@ -336,7 +345,7 @@ export default function CreateTripPage() {
               </div>
 
               <Button type="submit" className="w-full" isLoading={isLoading}>
-                Create Trip
+                {translate(t.trips.createTrip)}
               </Button>
             </CardContent>
           </form>

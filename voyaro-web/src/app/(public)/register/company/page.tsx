@@ -4,15 +4,19 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
+import { useLanguage } from "@/contexts/language-context";
+import { t } from "@/lib/translations";
 import { companies } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
 
 export default function RegisterCompanyPage() {
   const { user, token, register } = useAuth();
+  const { t: translate } = useLanguage();
   const router = useRouter();
   const [step, setStep] = useState(user ? 2 : 1);
   const [userFormData, setUserFormData] = useState({
@@ -45,7 +49,7 @@ export default function RegisterCompanyPage() {
     setError("");
 
     if (userFormData.password !== userFormData.confirmPassword) {
-      setError("Passwords do not match");
+      setError(translate(t.auth.passwordsDoNotMatch));
       return;
     }
 
@@ -96,6 +100,11 @@ export default function RegisterCompanyPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
+      {/* Language Switcher */}
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSwitcher />
+      </div>
+
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <div className="text-center mb-4">
@@ -104,12 +113,12 @@ export default function RegisterCompanyPage() {
             </Link>
           </div>
           <CardTitle className="text-2xl text-center">
-            {step === 1 ? "Create Admin Account" : "Register Your Company"}
+            {step === 1 ? translate(t.auth.createAdminAccount) : translate(t.auth.registerYourCompanyTitle)}
           </CardTitle>
           <CardDescription className="text-center">
             {step === 1
-              ? "First, create your admin account"
-              : "Now, tell us about your tour company"}
+              ? translate(t.auth.createAdminFirst)
+              : translate(t.auth.tellUsAboutCompany)}
           </CardDescription>
           <div className="flex justify-center gap-2 pt-2">
             <div className={`w-3 h-3 rounded-full ${step >= 1 ? "bg-primary" : "bg-gray-300"}`} />
@@ -127,7 +136,7 @@ export default function RegisterCompanyPage() {
               )}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="firstName">First Name</Label>
+                  <Label htmlFor="firstName">{translate(t.auth.firstName)}</Label>
                   <Input
                     id="firstName"
                     name="firstName"
@@ -137,7 +146,7 @@ export default function RegisterCompanyPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="lastName">Last Name</Label>
+                  <Label htmlFor="lastName">{translate(t.auth.lastName)}</Label>
                   <Input
                     id="lastName"
                     name="lastName"
@@ -148,7 +157,7 @@ export default function RegisterCompanyPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{translate(t.auth.email)}</Label>
                 <Input
                   id="email"
                   name="email"
@@ -159,7 +168,7 @@ export default function RegisterCompanyPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{translate(t.auth.password)}</Label>
                 <Input
                   id="password"
                   name="password"
@@ -170,7 +179,7 @@ export default function RegisterCompanyPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Label htmlFor="confirmPassword">{translate(t.auth.confirmPassword)}</Label>
                 <Input
                   id="confirmPassword"
                   name="confirmPassword"
@@ -183,7 +192,7 @@ export default function RegisterCompanyPage() {
             </CardContent>
             <CardFooter className="flex flex-col space-y-4">
               <Button type="submit" className="w-full" isLoading={isLoading}>
-                Continue
+                {translate(t.auth.continue)}
               </Button>
             </CardFooter>
           </form>
@@ -196,7 +205,7 @@ export default function RegisterCompanyPage() {
                 </div>
               )}
               <div className="space-y-2">
-                <Label htmlFor="name">Company Name</Label>
+                <Label htmlFor="name">{translate(t.auth.companyName)}</Label>
                 <Input
                   id="name"
                   name="name"
@@ -206,31 +215,31 @@ export default function RegisterCompanyPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description">{translate(t.auth.description)}</Label>
                 <Textarea
                   id="description"
                   name="description"
                   value={companyFormData.description}
                   onChange={handleCompanyChange}
-                  placeholder="Tell travelers about your company..."
+                  placeholder={translate(t.auth.descriptionPlaceholder)}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="destinations">
-                  Destinations (comma-separated)
+                  {translate(t.auth.destinationsLabel)}
                 </Label>
                 <Input
                   id="destinations"
                   name="destinations"
                   value={companyFormData.destinations}
                   onChange={handleCompanyChange}
-                  placeholder="Italy, Spain, Greece"
+                  placeholder={translate(t.auth.destinationsPlaceholder)}
                   required
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="minGroupSize">Min Group Size</Label>
+                  <Label htmlFor="minGroupSize">{translate(t.auth.minGroupSize)}</Label>
                   <Input
                     id="minGroupSize"
                     name="minGroupSize"
@@ -241,7 +250,7 @@ export default function RegisterCompanyPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="maxGroupSize">Max Group Size</Label>
+                  <Label htmlFor="maxGroupSize">{translate(t.auth.maxGroupSize)}</Label>
                   <Input
                     id="maxGroupSize"
                     name="maxGroupSize"
@@ -255,10 +264,10 @@ export default function RegisterCompanyPage() {
             </CardContent>
             <CardFooter className="flex flex-col space-y-4">
               <Button type="submit" className="w-full" isLoading={isLoading}>
-                Complete Registration
+                {translate(t.auth.completeRegistration)}
               </Button>
               <p className="text-xs text-center text-muted-foreground">
-                Your company will be reviewed before you can submit offers
+                {translate(t.auth.companyReviewNote)}
               </p>
             </CardFooter>
           </form>
@@ -266,9 +275,9 @@ export default function RegisterCompanyPage() {
 
         <div className="pb-6 text-center">
           <div className="text-sm text-muted-foreground">
-            Already have an account?{" "}
+            {translate(t.auth.alreadyHaveAccount)}{" "}
             <Link href="/login" className="text-primary hover:underline">
-              Sign in
+              {translate(t.auth.signIn)}
             </Link>
           </div>
         </div>
