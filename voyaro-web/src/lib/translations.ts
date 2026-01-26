@@ -219,6 +219,10 @@ export const t = {
     participants: { ka: 'მონაწილე', en: 'participants' },
     organizer: { ka: 'ორგანიზატორი', en: 'Organizer' },
     auctionInProgress: { ka: 'აუქციონი მიმდინარეობს', en: 'Auction in progress' },
+    deleteTrip: { ka: 'მოგზაურობის წაშლა', en: 'Delete trip' },
+    deleteConfirm: { ka: 'დარწმუნებული ხარ, რომ გსურს ამ მოგზაურობის წაშლა?', en: 'Are you sure you want to delete this trip?' },
+    deleting: { ka: 'იშლება...', en: 'Deleting...' },
+    deleteError: { ka: 'მოგზაურობის წაშლა ვერ მოხერხდა', en: 'Failed to delete trip' },
     // Status labels
     statusCollectingDates: { ka: 'თარიღების შეგროვება', en: 'Collecting Dates' },
     statusAuctionActive: { ka: 'აუქციონი აქტიურია', en: 'Auction Active' },

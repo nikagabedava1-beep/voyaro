@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { formatDate } from "@/lib/utils";
-import { Plus, MapPin, Users, Gavel, LogOut } from "lucide-react";
+import { Plus, MapPin, Users, Gavel, LogOut, Trash2 } from "lucide-react";
 import { Trip, TripStatus } from "@/types";
 
 const statusColors: Record<TripStatus, string> = {
@@ -30,6 +30,8 @@ export default function TripsPage() {
   const router = useRouter();
   const [trips, setTrips] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [deletingTripId, setDeletingTripId] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
 
   const statusLabels: Record<TripStatus, string> = {
     COLLECTING_DATES: translate(t.trips.statusCollectingDates),
@@ -61,6 +63,31 @@ export default function TripsPage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleDeleteClick = (e: React.MouseEvent, tripId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowDeleteConfirm(tripId);
+  };
+
+  const handleDeleteConfirm = async (tripId: string) => {
+    setDeletingTripId(tripId);
+    try {
+      await tripsApi.delete(token!, tripId);
+      setTrips(trips.filter(trip => trip.id !== tripId));
+    } catch (error: any) {
+      alert(error.message || translate(t.trips.deleteError));
+    } finally {
+      setDeletingTripId(null);
+      setShowDeleteConfirm(null);
+    }
+  };
+
+  const handleDeleteCancel = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowDeleteConfirm(null);
   };
 
   if (authLoading || !user) {
@@ -129,44 +156,81 @@ export default function TripsPage() {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {trips.map((trip) => (
-              <Link key={trip.id} href={`/trips/${trip.id}`}>
-                <Card className="hover:shadow-md transition-shadow cursor-pointer h-full">
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <CardTitle className="text-lg">{trip.title}</CardTitle>
-                        <CardDescription className="flex items-center gap-1">
-                          <MapPin className="w-4 h-4" />
-                          {trip.destination}
-                        </CardDescription>
+              <div key={trip.id} className="relative">
+                <Link href={`/trips/${trip.id}`}>
+                  <Card className="hover:shadow-md transition-shadow cursor-pointer h-full">
+                    <CardHeader>
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1 min-w-0 pr-2">
+                          <CardTitle className="text-lg truncate">{trip.title}</CardTitle>
+                          <CardDescription className="flex items-center gap-1">
+                            <MapPin className="w-4 h-4 flex-shrink-0" />
+                            <span className="truncate">{trip.destination}</span>
+                          </CardDescription>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <Badge className={`${statusColors[trip.status as TripStatus]} text-white flex-shrink-0`}>
+                            {statusLabels[trip.status as TripStatus]}
+                          </Badge>
+                          {trip.isCreator && (
+                            <button
+                              onClick={(e) => handleDeleteClick(e, trip.id)}
+                              className="p-1.5 rounded-md hover:bg-red-100 text-gray-400 hover:text-red-600 transition-colors"
+                              title={translate(t.trips.deleteTrip)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
                       </div>
-                      <Badge className={`${statusColors[trip.status as TripStatus]} text-white`}>
-                        {statusLabels[trip.status as TripStatus]}
-                      </Badge>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between text-sm text-muted-foreground">
+                        <div className="flex items-center gap-1">
+                          <Users className="w-4 h-4" />
+                          {trip.participantCount} {translate(t.trips.participants)}
+                        </div>
+                        <div>{formatDate(trip.createdAt)}</div>
+                      </div>
+                      {trip.isCreator && (
+                        <Badge variant="outline" className="mt-2">
+                          {translate(t.trips.organizer)}
+                        </Badge>
+                      )}
+                      {trip.auction?.status === "ACTIVE" && (
+                        <div className="mt-2 flex items-center gap-1 text-sm text-blue-600">
+                          <Gavel className="w-4 h-4" />
+                          {translate(t.trips.auctionInProgress)}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </Link>
+
+                {/* Delete Confirmation Modal */}
+                {showDeleteConfirm === trip.id && (
+                  <div className="absolute inset-0 bg-white/95 rounded-lg flex flex-col items-center justify-center p-4 z-10">
+                    <p className="text-center font-medium mb-4">{translate(t.trips.deleteConfirm)}</p>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleDeleteCancel}
+                      >
+                        {translate(t.common.cancel)}
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDeleteConfirm(trip.id)}
+                        disabled={deletingTripId === trip.id}
+                      >
+                        {deletingTripId === trip.id ? translate(t.trips.deleting) : translate(t.common.delete)}
+                      </Button>
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between text-sm text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <Users className="w-4 h-4" />
-                        {trip.participantCount} {translate(t.trips.participants)}
-                      </div>
-                      <div>{formatDate(trip.createdAt)}</div>
-                    </div>
-                    {trip.isCreator && (
-                      <Badge variant="outline" className="mt-2">
-                        {translate(t.trips.organizer)}
-                      </Badge>
-                    )}
-                    {trip.auction?.status === "ACTIVE" && (
-                      <div className="mt-2 flex items-center gap-1 text-sm text-blue-600">
-                        <Gavel className="w-4 h-4" />
-                        {translate(t.trips.auctionInProgress)}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              </Link>
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         )}
