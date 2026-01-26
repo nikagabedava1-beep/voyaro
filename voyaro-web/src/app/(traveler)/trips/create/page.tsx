@@ -175,8 +175,7 @@ export default function CreateTripPage() {
     title: "",
     description: "",
     destination: "",
-    minParticipants: "2",
-    maxParticipants: "12",
+    participants: "4",
   });
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [error, setError] = useState("");
@@ -203,13 +202,14 @@ export default function CreateTripPage() {
 
     try {
       const isFlexibleDestination = formData.destination === "anywhere";
+      const participantsCount = parseInt(formData.participants);
       const trip = await trips.create(token, {
         title: formData.title,
         description: formData.description || undefined,
         destination: isFlexibleDestination ? "Anywhere" : formData.destination,
         selectedTags: selectedTags.length > 0 ? selectedTags : undefined,
-        minParticipants: parseInt(formData.minParticipants),
-        maxParticipants: parseInt(formData.maxParticipants),
+        minParticipants: 2,
+        maxParticipants: participantsCount,
       });
       router.push(`/trips/${(trip as any).id}`);
     } catch (err: any) {
@@ -317,31 +317,21 @@ export default function CreateTripPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="minParticipants">{translate(t.trips.minParticipants)}</Label>
-                  <Input
-                    id="minParticipants"
-                    name="minParticipants"
-                    type="number"
-                    min="2"
-                    value={formData.minParticipants}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="maxParticipants">{translate(t.trips.maxParticipants)}</Label>
-                  <Input
-                    id="maxParticipants"
-                    name="maxParticipants"
-                    type="number"
-                    max="50"
-                    value={formData.maxParticipants}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="participants">{translate(t.trips.numberOfFriends)}</Label>
+                <Input
+                  id="participants"
+                  name="participants"
+                  type="number"
+                  min="2"
+                  max="50"
+                  value={formData.participants}
+                  onChange={handleChange}
+                  required
+                />
+                <p className="text-xs text-muted-foreground">
+                  {translate(t.trips.numberOfFriendsHint)}
+                </p>
               </div>
 
               <Button type="submit" className="w-full" isLoading={isLoading}>

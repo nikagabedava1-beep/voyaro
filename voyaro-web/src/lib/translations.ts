@@ -245,6 +245,8 @@ export const t = {
     describePlans: { ka: 'აღწერე შენი მოგზაურობის გეგმები...', en: 'Describe your trip plans...' },
     minParticipants: { ka: 'მინ. მონაწილეები', en: 'Min Participants' },
     maxParticipants: { ka: 'მაქს. მონაწილეები', en: 'Max Participants' },
+    numberOfFriends: { ka: 'მეგობრების რაოდენობა', en: 'Number of Friends' },
+    numberOfFriendsHint: { ka: 'რამდენი მეგობარი მოგზაურობს შენთან ერთად (შენ ჩათვლით)', en: 'How many friends will travel with you (including yourself)' },
     loginToCreate: { ka: 'გთხოვთ შეხვიდე მოგზაურობის შესაქმნელად', en: 'Please log in to create a trip' },
     // Trip detail page
     backToTrip: { ka: 'უკან მოგზაურობაზე', en: 'Back to Trip' },
