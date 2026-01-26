@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsInt, Min, Max, MinLength } from 'class-validator';
+import { IsString, IsOptional, IsInt, Min, Max, MinLength, IsArray } from 'class-validator';
 
 export class CreateTripDto {
   @IsString()
@@ -16,6 +16,11 @@ export class CreateTripDto {
   @IsOptional()
   @IsString()
   theme?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  selectedTags?: string[];
 
   @IsOptional()
   @IsInt()

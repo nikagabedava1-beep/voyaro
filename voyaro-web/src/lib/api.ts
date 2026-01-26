@@ -70,6 +70,7 @@ export const trips = {
     destination: string;
     description?: string;
     theme?: string;
+    selectedTags?: string[];
     minParticipants?: number;
     maxParticipants?: number;
   }) => request("/trips", { method: "POST", token, body: JSON.stringify(data) }),
