@@ -13,7 +13,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { TagSelector } from "@/components/ui/tag-selector";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { ArrowLeft } from "lucide-react";
 
@@ -177,7 +176,6 @@ export default function CreateTripPage() {
     destination: "",
     participants: "4",
   });
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -207,7 +205,6 @@ export default function CreateTripPage() {
         title: formData.title,
         description: formData.description || undefined,
         destination: isFlexibleDestination ? "Anywhere" : formData.destination,
-        selectedTags: selectedTags.length > 0 ? selectedTags : undefined,
         minParticipants: 2,
         maxParticipants: participantsCount,
       });
@@ -289,20 +286,6 @@ export default function CreateTripPage() {
                 <p className="text-xs text-muted-foreground">
                   {translate(t.trips.anywhereHint)}
                 </p>
-              </div>
-
-              <div className="space-y-3">
-                <Label>{translate(t.trips.tripInterests)}</Label>
-                <p className="text-sm text-muted-foreground -mt-1">
-                  {translate(t.trips.whatExperiences)}
-                </p>
-                <TagSelector
-                  selectedTags={selectedTags}
-                  onChange={setSelectedTags}
-                  maxSelections={5}
-                  showCounter={true}
-                  columns={2}
-                />
               </div>
 
               <div className="space-y-2">
