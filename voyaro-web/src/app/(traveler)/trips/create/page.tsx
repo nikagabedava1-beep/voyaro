@@ -176,6 +176,8 @@ export default function CreateTripPage() {
     description: "",
     destination: "",
     participants: "4",
+    minBudget: "",
+    maxBudget: "",
   });
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [error, setError] = useState("");
@@ -203,11 +205,15 @@ export default function CreateTripPage() {
     try {
       const isFlexibleDestination = formData.destination === "anywhere";
       const participantsCount = parseInt(formData.participants);
+      const minBudget = formData.minBudget ? parseFloat(formData.minBudget) : undefined;
+      const maxBudget = formData.maxBudget ? parseFloat(formData.maxBudget) : undefined;
       const trip = await trips.create(token, {
         title: formData.title,
         description: formData.description || undefined,
         destination: isFlexibleDestination ? "Anywhere" : formData.destination,
         selectedTags: selectedTags.length > 0 ? selectedTags : undefined,
+        minBudget,
+        maxBudget,
         minParticipants: 2,
         maxParticipants: participantsCount,
       });
@@ -303,6 +309,37 @@ export default function CreateTripPage() {
                   showCounter={true}
                   columns={2}
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label>{translate(t.trips.priceRange)}</Label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Input
+                      id="minBudget"
+                      name="minBudget"
+                      type="number"
+                      min="0"
+                      value={formData.minBudget}
+                      onChange={handleChange}
+                      placeholder={translate(t.trips.minPrice)}
+                    />
+                  </div>
+                  <div>
+                    <Input
+                      id="maxBudget"
+                      name="maxBudget"
+                      type="number"
+                      min="0"
+                      value={formData.maxBudget}
+                      onChange={handleChange}
+                      placeholder={translate(t.trips.maxPrice)}
+                    />
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {translate(t.trips.priceRangeHint)}
+                </p>
               </div>
 
               <div className="space-y-2">

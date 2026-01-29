@@ -101,6 +101,8 @@ model Trip {
   destination       String
   theme             String?
   selectedTags      String[]            @default([])
+  minBudget         Float?
+  maxBudget         Float?
   status            TripStatus          @default(COLLECTING_DATES)
   inviteToken       String              @unique @default(uuid())
   minParticipants   Int                 @default(2)

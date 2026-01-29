@@ -247,6 +247,10 @@ export const t = {
     maxParticipants: { ka: 'მაქს. მონაწილეები', en: 'Max Participants' },
     numberOfFriends: { ka: 'მეგობრების რაოდენობა', en: 'Number of Friends' },
     numberOfFriendsHint: { ka: 'რამდენი მეგობარი მოგზაურობს შენთან ერთად (შენ ჩათვლით)', en: 'How many friends will travel with you (including yourself)' },
+    priceRange: { ka: 'ფასის დიაპაზონი (არასავალდებულო)', en: 'Price Range (optional)' },
+    priceRangeHint: { ka: 'მიუთითე შენი ბიუჯეტი ერთ ადამიანზე GEL-ში', en: 'Indicate your budget per person in GEL' },
+    minPrice: { ka: 'მინ. ფასი', en: 'Min Price' },
+    maxPrice: { ka: 'მაქს. ფასი', en: 'Max Price' },
     loginToCreate: { ka: 'გთხოვთ შეხვიდე მოგზაურობის შესაქმნელად', en: 'Please log in to create a trip' },
     // Trip detail page
     backToTrip: { ka: 'უკან მოგზაურობაზე', en: 'Back to Trip' },

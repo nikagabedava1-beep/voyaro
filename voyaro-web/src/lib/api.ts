@@ -71,6 +71,8 @@ export const trips = {
     description?: string;
     theme?: string;
     selectedTags?: string[];
+    minBudget?: number;
+    maxBudget?: number;
     minParticipants?: number;
     maxParticipants?: number;
   }) => request("/trips", { method: "POST", token, body: JSON.stringify(data) }),
