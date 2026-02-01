@@ -206,6 +206,10 @@ export const t = {
     companyReviewNote: { ka: 'შენი კომპანია განხილული იქნება სანამ შეძლებ შეთავაზებების გაგზავნას', en: 'Your company will be reviewed before you can submit offers' },
     passwordsDoNotMatch: { ka: 'პაროლები არ ემთხვევა', en: 'Passwords do not match' },
     passwordMinLength: { ka: 'პაროლი მინიმუმ 8 სიმბოლო უნდა იყოს', en: 'Password must be at least 8 characters' },
+    // Login page value propositions
+    groupTrips: { ka: 'ჯგუფური მოგზაურობა', en: 'Group Trips' },
+    bestDeals: { ka: 'საუკეთესო ფასები', en: 'Best Deals' },
+    easyPlanning: { ka: 'მარტივი დაგეგმვა', en: 'Easy Planning' },
   },
 
   // Trips
